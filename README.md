@@ -1,6 +1,12 @@
 # SelfHelp plugin - Formula Parser
 
-This is a SelfhelpPlugin that is used for [FormulaParsing](https://github.com/neonxp/MathExecutor) integration
+The plugin is based on (MathExecutor)[https://github.com/neonxp/MathExecutor]. It supports all the operators and functions that are supported in `MathExecutor`.
+The plugin uses (MathPHP)[https://github.com/markrogoyski/math-php] for additional math functions
+
+Additional functions:
+ - sum (for array)
+ - order array
+ - normal cdf
 
 
 # Installation
@@ -11,4 +17,5 @@ This is a SelfhelpPlugin that is used for [FormulaParsing](https://github.com/ne
 
 # Requirements
 
- - SelfHelp v5.0.0+
+ - SelfHelp v5.2.5+
+ - PHP 7.4+ better use 8.1
