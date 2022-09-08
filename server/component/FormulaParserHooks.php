@@ -35,7 +35,12 @@ class FormulaParserHooks extends BaseHooks
      */
     public function __construct($services, $params = array())
     {
-        parent::__construct($services, $params);
+        parent::__construct($services, $params);        
+    }
+
+    /* Private Methods *********************************************************/
+
+    private function init_math_executor(){
         $this->executor = new MathExecutor();
         $this->set_math_functions();
         $this->executor->setVarValidationHandler(function (string $name, $variable) {
@@ -46,8 +51,6 @@ class FormulaParserHooks extends BaseHooks
             throw new Exception("Invalid variable type");
         });
     }
-
-    /* Private Methods *********************************************************/
 
     private function set_math_functions()
     {
@@ -189,6 +192,7 @@ class FormulaParserHooks extends BaseHooks
             // if there is no formula we dont need more calculations; return normal execution
             return $this->execute_private_method($args);
         }
+        $this->init_math_executor();
         $model = $args['hookedClassInstance'];
         $user_name = $model->db->fetch_user_name();
         $user_code = $model->db->get_user_code();
