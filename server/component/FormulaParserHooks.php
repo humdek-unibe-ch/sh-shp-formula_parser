@@ -5,12 +5,7 @@
 ?>
 <?php
 require_once __DIR__ . "/../../../../component/BaseHooks.php";
-require_once __DIR__ . "/../ext/math-executor/vendor/autoload.php";
-require_once __DIR__ . "/../ext/php-math/vendor/autoload.php";
-
-use NXP\MathExecutor;
-use MathPHP\Probability\Distribution\Continuous;
-use MathPHP\Statistics\Descriptive;
+require_once __DIR__ . "/CustomMathFunctions.php";
 
 /**
  * The class to define the hooks for the plugin.
@@ -35,96 +30,15 @@ class FormulaParserHooks extends BaseHooks
      */
     public function __construct($services, $params = array())
     {
-        parent::__construct($services, $params);        
+        parent::__construct($services, $params);
     }
 
     /* Private Methods *********************************************************/
 
-    private function init_math_executor(){
-        $this->executor = new MathExecutor();
-        $this->set_math_functions();
-        $this->executor->setVarValidationHandler(function (string $name, $variable) {
-            // allow all scalars, array and null
-            if (is_numeric($variable) || is_array($variable)) {
-                return;
-            }
-            throw new Exception("Invalid variable type");
-        });
-    }
-
-    private function set_math_functions()
+    private function init_math_executor()
     {
-        //Array sum function
-        $this->executor->addFunction('sum', function ($arr) {
-            return array_sum($arr);
-        });
-
-        //Array order function
-        $this->executor->addFunction('order', function ($arr, $key, $sort_type) {
-            try {
-                if (!is_array($arr)) {
-                    return array("error" => 'First parameter is not array');
-                } else if (!($sort_type == "SORT_ASC" || $sort_type == "SORT_DESC")) {
-                    return array("error" => 'Third parameter is not SORT_ASC or SORT_DESC');
-                } else {
-                    $arr_column = array_column($arr, $key);
-                    if (count($arr_column) != count($arr)) {
-                        return array("error" => 'Second parameter is not correct');
-                    }
-                    $sort_type = $sort_type == "SORT_DESC" ? SORT_DESC : SORT_ASC;
-                    array_multisort($arr_column, $sort_type, $arr);
-                    return $arr;
-                }
-            } catch (Exception $e) {
-                return array("error" => $e->getMessage());
-            }
-        });
-
-        // CDF - Normal distribution
-        $this->executor->addFunction('normal_cdf', function ($x, $mu, $sigma) {
-            try {
-                if (is_numeric($x) && is_numeric($mu) && is_numeric($sigma)) {
-                    $normal = new Continuous\Normal($mu, $sigma);
-                    return $normal->cdf($x);
-                } else {
-                    return array("error" => 'Some of the passed parameters are not numeric');
-                }
-            } catch (Exception $e) {
-                return array("error" => $e->getMessage());
-            }
-        });
-
-        // Standard deviation (For a sample; uses sample variance)
-        $this->executor->addFunction('standardDeviation', function ($values) {
-            try {
-                return Descriptive::standardDeviation($values, true);
-            } catch (Exception $e) {
-                return array("error" => $e->getMessage());
-            }
-        });
-
-        // Re rank values based on a table
-        $this->executor->addFunction('re_rank', function ($table, $value, $key) {
-            try {
-                $result = null;
-                foreach ($table as $t_key => $t_value) {
-                    if (!is_numeric($value) || !is_numeric($t_key)) {
-                        return array("error" => $value . ' or ' . $t_key . ' is not numeric');
-                    } else {
-                        if ($value >= $t_key) {
-                            if (isset($t_value[$key])) {
-                                $result = $t_value[$key];
-                            } else {
-                                return array("error" => 'Wrong key');
-                            }
-                        }
-                    }
-                }
-                return $result;
-            } catch (Exception $e) {
-                return array("error" => $e->getMessage());
-            }
-        });
+        $customMathFunctions = new CustomMathFunctions($this->services);
+        $this->executor = $customMathFunctions->get_executor();
     }
 
     /**
@@ -158,15 +72,20 @@ class FormulaParserHooks extends BaseHooks
                 if (is_array($formula_info) && isset($formula_info['result_holder'])) {
                     try {
                         $calculated_results[$formula_info['result_holder']] = $this->executor->execute($formula_info['formula']);
+                    } catch (\Throwable $e) { // For PHP 7
+                        $calculated_results[$formula_info['result_holder']] = array("error" => $e->getMessage());
+                        break;
                     } catch (Exception $e) {
                         $calculated_results[$formula_info['result_holder']] = array("error" => $e->getMessage());
+                        break;
                     }
                 }
             }
             $calculated_results['debug'] = json_encode(
                 array(
                     "calculated_results" => $calculated_results,
-                    "variables" => $this->executor->getVars()
+                    "variables" => $this->executor->getVars(),
+                    "json_formula" => $json_formula
                 )
             );
             return $calculated_results;
@@ -245,15 +164,7 @@ class FormulaParserHooks extends BaseHooks
             }
 
             $field['content'] = $field['content'] ? $field['content'] : '';
-
-            if ($calc_formula_values) {
-                $field['content'] = $this->execute_private_method(array(
-                    "hookedClassInstance" => $model,
-                    "methodName" => "replace_calced_values",
-                    "field_content" => $field['content'],
-                    "calc_formula_values" => $calc_formula_values
-                ));
-            }
+            $field['content'] = $this->services->get_db()->replace_calced_values($field['content'], $calc_formula_values);
 
             $entry_record = $this->get_private_property(array(
                 "hookedClassInstance" => $model,
@@ -290,6 +201,31 @@ class FormulaParserHooks extends BaseHooks
                 "arrayKey" => $field['name']
             ));
         }
+    }
+
+    /**
+     * Return a BaseStyleComponent object
+     * @param object $args
+     * Params passed to the method
+     * @return object
+     * Return a BaseStyleComponent object
+     */
+    public function outputFieldFormulaConfigEdit($args){
+        $field = $this->get_param_by_name($args, 'field');
+        $res = $this->execute_private_method($args);                
+        if ($field['name'] == 'formula') {            
+            $field_name_prefix = "fields[" . $field['name'] . "][" . $field['id_language'] . "]" . "[" . $field['id_gender'] . "]";
+            $formulaConfigBuilder = new BaseStyleComponent("formulaConfigBuilder", array(
+                "value" => $field['content'],
+                "name" => $field_name_prefix . "[content]"
+            ));
+            if ($formulaConfigBuilder && $res) {
+                $children = $res->get_view()->get_children();
+                $children[] = $formulaConfigBuilder;
+                $res->get_view()->set_children($children);
+            }
+        }
+        return $res;
     }
 }
 ?>

@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "array",
+    "title": "Formula Config",
+    "format": "tabs",
+    "items": {
+        "type": "object",
+        "title": "Formula",
+        "description": "<span>Formula definition</span>",
+        "format": "grid-strict",
+        "properties": {
+            "formula": {
+                "type": "string",
+                "title": "Formula",
+                "description": "Formula expression",
+                "propertyOrder": 1,
+                "options": {
+                    "grid_columns": 6
+                }
+            },
+            "result_holder": {
+                "type": "string",
+                "title": "Result Variable Name",
+                "description": "Variable name for the returned value. Later it can be used to retrieved the calculated result",
+                "propertyOrder": 2,
+                "options": {
+                    "grid_columns": 6
+                }
+            },
+            "variables": {
+                "type": "object",
+                "title": "Variables",
+                "propertyOrder": 3,
+                "options": {
+                    "grid_columns": 12
+                },
+                "items": {
+                    "type": "object",
+                    "title": "Variable",
+                    "description": "Variable description",
+                    "patternProperties": {
+                        "type": "string",
+                        ".*": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "required": [
+            "formula",
+            "result_holder"
+        ]
+    }
+}
