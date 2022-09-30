@@ -111,12 +111,17 @@ class FormulaParserHooks extends BaseHooks
             // if there is no formula we dont need more calculations; return normal execution
             return $this->execute_private_method($args);
         }
+
         $this->init_math_executor();
         $model = $args['hookedClassInstance'];
+        $this->execute_private_method($args);
+        $adjusted_fields = $this->execute_private_method(array(
+            "hookedClassInstance" => $model,
+            "methodName" => "get_db_fields"
+        ));
         $user_name = $model->db->fetch_user_name();
         $user_code = $model->db->get_user_code();
-        $data_config_key = array_search('data_config', array_column($fields, 'name'));
-        $data_config = $data_config_key ? $fields[$data_config_key]['content'] : null;
+        $data_config = isset($adjusted_fields['data_config']) ? json_encode($adjusted_fields['data_config']['content']) : null;
         if ($data_config) {
             // if data_config is set replace if there are any globals
             $data_config = str_replace('@user_code', $user_code, $data_config);
@@ -133,72 +138,16 @@ class FormulaParserHooks extends BaseHooks
             "user_code" => $user_code
         ));
         $calc_formula_values = $this->calc_formula_values($formula_json);
-        foreach ($fields as $field) {
-            // set style info
-            $this->set_private_property(array(
-                "hookedClassInstance" => $model,
-                "propertyName" => "style_name",
-                "propertyNewValue" => $field['style'],
-            ));
-            $this->set_private_property(array(
-                "hookedClassInstance" => $model,
-                "propertyName" => "style_type",
-                "propertyNewValue" => $field['type'],
-            ));
-            $this->set_private_property(array(
-                "hookedClassInstance" => $model,
-                "propertyName" => "section_name",
-                "propertyNewValue" => $field['section_name'],
-            ));
-
-            // load dynamic data if needed
-            if ($data_config) {
-                $field['content'] = $this->execute_private_method(array(
-                    "hookedClassInstance" => $model,
-                    "methodName" => "calc_dynamic_values",
-                    "field" => $field,
-                    "data_config" => $data_config ? $data_config : array(),
-                    "user_name" => $user_name,
-                    "user_code" => $user_code
-                ));
-            }
-
-            $field['content'] = $field['content'] ? $field['content'] : '';
-            $field['content'] = $this->services->get_db()->replace_calced_values($field['content'], $calc_formula_values);
-
-            $entry_record = $this->get_private_property(array(
-                "hookedClassInstance" => $model,
-                "propertyName" => "entry_record",
-            ));
-
-            $default = $field["default_value"] ?? "";
-            if ($field['name'] == "url") {
-                $field['content'] = $model->get_url($field['content']);
-            } else if ($field['type'] == "markdown" && (!$entry_record || count($entry_record) == 0)) {
-                $field['content'] = $model->parsedown->text($field['content']);
-            } else if ($field['type'] == "markdown-inline" && (!$entry_record || count($entry_record) == 0)) {
-                $field['content'] = $model->parsedown->line($field['content']);
-            } else if ($field['type'] == "json") {
-                $field['content'] = $field['content'] ? json_decode($field['content'], true) : array();
-                /* $field['content'] = $this->json_style_parse($field['content']); */
-            } else if ($field['type'] == "condition") {
-                $field['content'] = $field['content'] ? json_decode($field['content'], true) : array();
-            } else if ($field['type'] == "data-config") {
-                $field['content'] = $field['content'] ? json_decode($field['content'], true) : array();
-            } else if ($model->user_input->is_new_ui_enabled() && $model->is_link_active("cmsUpdate") && $field['name'] == "css") {
-                // if it is the new UI and in edit mode remove the custom css for better visibility
-                $field['content'] = '';
+        foreach ($adjusted_fields as $field_name => $field) {
+            // if ($field['type'] != STYLE_TYPE_INTERNAL) {
+            if ($field['content']) {
+                $field['content'] = $this->services->get_db()->replace_calced_values($field['content'], $calc_formula_values);
             }
             $this->set_private_property(array(
                 "hookedClassInstance" => $model,
                 "propertyName" => "db_fields",
-                "propertyNewValue" => array(
-                    "content" => $field['content'],
-                    "type" => $field['type'],
-                    "id" => $field['id'],
-                    "default" => $default,
-                ),
-                "arrayKey" => $field['name']
+                "propertyNewValue" => $field,
+                "arrayKey" => $field_name
             ));
         }
     }
@@ -210,10 +159,11 @@ class FormulaParserHooks extends BaseHooks
      * @return object
      * Return a BaseStyleComponent object
      */
-    public function outputFieldFormulaConfigEdit($args){
+    public function outputFieldFormulaConfigEdit($args)
+    {
         $field = $this->get_param_by_name($args, 'field');
-        $res = $this->execute_private_method($args);                
-        if ($field['name'] == 'formula') {            
+        $res = $this->execute_private_method($args);
+        if ($field['name'] == 'formula') {
             $field_name_prefix = "fields[" . $field['name'] . "][" . $field['id_language'] . "]" . "[" . $field['id_gender'] . "]";
             $formulaConfigBuilder = new BaseStyleComponent("formulaConfigBuilder", array(
                 "value" => $field['content'],
@@ -221,6 +171,31 @@ class FormulaParserHooks extends BaseHooks
             ));
             if ($formulaConfigBuilder && $res) {
                 $children = $res->get_view()->get_children();
+                $children[] = $formulaConfigBuilder;
+                $res->get_view()->set_children($children);
+            }
+        }
+        return $res;
+    }
+
+    /**
+     * Return a BaseStyleComponent object
+     * @param object $args
+     * Params passed to the method
+     * @return object
+     * Return a BaseStyleComponent object
+     */
+    public function outputFieldFormulaConfigView($args)
+    {
+        $field = $this->get_param_by_name($args, 'field');
+        $res = $this->execute_private_method($args);
+        if ($field['name'] == 'formula') {
+            $formulaConfigBuilder = new BaseStyleComponent("rawText", array(
+                "text" => $field['content'] && $field['content'] != 'null' ? 'exists' : $field['content']
+            ));
+            if ($formulaConfigBuilder && $res) {
+                $children = $res->get_view()->get_children();
+                array_pop($children); // remove last element because it is the whole value of the formula
                 $children[] = $formulaConfigBuilder;
                 $res->get_view()->set_children($children);
             }
