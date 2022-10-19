@@ -1,3 +1,10 @@
+# v1.1.0
+
+### New Features
+ - add new function `get_current_date` - Get the current date
+  - parameters: `format` - the date format of the current date, ex: `Y-m-d`, `d-m-Y`, `Y-m-d H:i`
+ - add `formula` field to style `conditionalContainer`
+
 # v1.0.0
 
 ### New Features

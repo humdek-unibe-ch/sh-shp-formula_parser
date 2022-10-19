@@ -325,7 +325,23 @@ class CustomMathFunctions
         });
     }
 
-
+    /**
+     * Get the current date in the desired format
+     * @param string format
+     * The date format
+     * @return string
+     * Return the current date formatted as a string
+     */
+    private function set_function_get_current_date()
+    {
+        $this->executor->addFunction('get_current_date', function ($format) {
+            try {
+                return date($format);
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
 
     /**
      * Set all custom functions that we want to add to the math executor
@@ -344,6 +360,7 @@ class CustomMathFunctions
         $this->set_function_wrap_for_globals();
         $this->set_function_set_globals();
         $this->set_function_implode();
+        $this->set_function_get_current_date();
     }
 
     /* Public Methods *********************************************************/

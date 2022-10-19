@@ -25,6 +25,8 @@ Additional functions:
   - parameters: `string` - the string that we want to wrap
  - `set_globals` - Search for global keywords and replace them
   - parameters: The string that we will search for globals 
+ - `get_current_date` - Get the current date
+  - parameters: `format` - the date format of the current date, ex: `Y-m-d`, `d-m-Y`, `Y-m-d H:i`
 
 
 # Installation
