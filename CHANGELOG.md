@@ -1,3 +1,6 @@
+# v1.1.1
+ - adjust function `sum` to accept array or comma separated sequence of numbers, Check examples in the `README`
+
 # v1.1.0
 
 ### New Features

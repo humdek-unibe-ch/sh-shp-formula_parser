@@ -47,8 +47,17 @@ class CustomMathFunctions
     private function set_function_sum()
     {
         //Array sum function
-        $this->executor->addFunction('sum', function ($arr) {
-            return array_sum($arr);
+        $this->executor->addFunction('sum', function ($arg1, ...$args) {
+            if (\is_array($arg1)) {
+                if (0 === \count($arg1)) {
+                    throw new \InvalidArgumentException('Array must contain at least one element!');
+                }
+                return \array_sum($arg1);
+            }
+
+            $args = [$arg1, ...$args];
+
+            return \array_sum($args);
         });
     }
 
