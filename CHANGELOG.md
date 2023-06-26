@@ -1,3 +1,6 @@
+# v1.1.2 (Unpublished)
+ - do not check calculations in CMS
+
 # v1.1.1
  - adjust function `sum` to accept array or comma separated sequence of numbers, Check examples in the `README`
 

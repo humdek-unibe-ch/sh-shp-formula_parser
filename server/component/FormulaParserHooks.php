@@ -115,6 +115,10 @@ class FormulaParserHooks extends BaseHooks
         $this->init_math_executor();
         $model = $args['hookedClassInstance'];
         $this->execute_private_method($args);
+        if ($this->is_cms_page()) {
+            // do not calculate in cms
+            return;
+        }
         $adjusted_fields = $this->execute_private_method(array(
             "hookedClassInstance" => $model,
             "methodName" => "get_db_fields"
