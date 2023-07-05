@@ -1,4 +1,4 @@
-# v1.1.2 (Unpublished)
+# v1.1.2
  - do not check calculations in CMS
 
 # v1.1.1
