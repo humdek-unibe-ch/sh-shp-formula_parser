@@ -1,3 +1,6 @@
+# v1.1.3
+ - add function `count` used to return the length of an array    
+
 # v1.1.2
  - do not check calculations in CMS
 

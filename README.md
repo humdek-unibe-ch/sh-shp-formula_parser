@@ -37,6 +37,17 @@ Additional functions:
   - parameters: The string that we will search for globals 
  - `get_current_date` - Get the current date
   - parameters: `format` - the date format of the current date, ex: `Y-m-d`, `d-m-Y`, `Y-m-d H:i`
+ - `count` (for array) - pass array of values and return the length of the array
+  - parameters: array with values
+  - examples: `[
+                    {
+                        "formula": "count(array($arr))",
+                        "result_holder": "arr1_length",
+                        "variables": {
+                            "arr": "{{record_id}}"
+                        }
+                    }
+                ]`
 
 
 # Installation

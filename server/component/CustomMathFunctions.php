@@ -61,6 +61,20 @@ class CustomMathFunctions
         });
     }
 
+    private function set_function_count()
+    {
+        //Array count function
+        $this->executor->addFunction('count', function ($arg1, ...$args) {
+            if (\is_array($arg1)) {                
+                return \count($arg1);
+            }
+
+            $args = [$arg1, ...$args];
+
+            return \count($args);
+        });
+    }
+
     private function set_function_order_array()
     {
         //Array order function
@@ -370,6 +384,7 @@ class CustomMathFunctions
         $this->set_function_set_globals();
         $this->set_function_implode();
         $this->set_function_get_current_date();
+        $this->set_function_count();
     }
 
     /* Public Methods *********************************************************/
