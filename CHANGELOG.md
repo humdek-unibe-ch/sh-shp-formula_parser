@@ -1,13 +1,5 @@
 # v1.1.4
- - add function `array_filter_by_value` used to filter array. Example: `[
-	{
-		"formula": "array_filter_by_value(['1','2','1', '3'],$filtered_value)",
-		"result_holder": "filtered_array",
-		"variables": {			
-			"filtered_value": "1"
-		}
-	}
-]`
+ - add function `array_filter_by_value` used to filter array.
 
 # v1.1.3
  - add function `count` used to return the length of an array    
