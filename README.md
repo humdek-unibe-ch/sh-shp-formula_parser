@@ -48,6 +48,17 @@ Additional functions:
                         }
                     }
                 ]`
+- `array_filter_by_value` filter array by value. 
+ - parameters: `array` with values and `filter_value`
+ - examples: `[
+	{
+		"formula": "array_filter_by_value(['1','2','1', '3'],$filtered_value)",
+		"result_holder": "filtered_array",
+		"variables": {			
+			"filtered_value": "1"
+		}
+	}
+]`
 
 
 # Installation
