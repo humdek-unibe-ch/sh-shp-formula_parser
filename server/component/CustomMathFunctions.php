@@ -65,7 +65,7 @@ class CustomMathFunctions
     {
         //Array count function
         $this->executor->addFunction('count', function ($arg1, ...$args) {
-            if (\is_array($arg1)) {                
+            if (\is_array($arg1)) {
                 return \count($arg1);
             }
 
@@ -92,6 +92,28 @@ class CustomMathFunctions
                     $sort_type = $sort_type == "SORT_DESC" ? SORT_DESC : SORT_ASC;
                     array_multisort($arr_column, $sort_type, $arr);
                     return $arr;
+                }
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
+    private function set_function_array_filter_by_value()
+    {
+        //Array order function
+        $this->executor->addFunction('array_filter_by_value', function ($arr, $filterValue) {
+            try {
+                if (!is_array($arr)) {
+                    return array("error" => 'First parameter is not array');
+                } else if (!isset($filterValue)) {
+                    return array("error" => 'filtered value is not set');
+                } else {
+                    // Use array_filter with an inline callback function
+                    $resultArray = array_filter($arr, function ($value) use ($filterValue) {
+                        return $value === $filterValue;
+                    });
+                    return array_values($resultArray);
                 }
             } catch (Exception $e) {
                 return array("error" => $e->getMessage());
@@ -385,6 +407,7 @@ class CustomMathFunctions
         $this->set_function_implode();
         $this->set_function_get_current_date();
         $this->set_function_count();
+        $this->set_function_array_filter_by_value();
     }
 
     /* Public Methods *********************************************************/
