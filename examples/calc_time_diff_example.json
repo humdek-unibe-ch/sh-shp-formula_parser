@@ -1,0 +1,82 @@
+{
+  "section": {
+    "section_name": "1706093220-markdown",
+    "id_sections": 191,
+    "style_name": "markdown",
+    "id_styles": 6,
+    "position": 0,
+    "fields": [
+      {
+        "id_styles": 6,
+        "style_name": "markdown",
+        "field_name": "css",
+        "id_fields": 23,
+        "locale": "all",
+        "gender": "male",
+        "content": ""
+      },
+      {
+        "id_styles": 6,
+        "style_name": "markdown",
+        "field_name": "text_md",
+        "id_fields": 25,
+        "locale": "de-CH",
+        "gender": "male",
+        "content": "Remaing days: {{remaining_days}}"
+      },
+      {
+        "id_styles": 6,
+        "style_name": "markdown",
+        "field_name": "condition",
+        "id_fields": 91,
+        "locale": "all",
+        "gender": "male",
+        "content": "                                    "
+      },
+      {
+        "id_styles": 6,
+        "style_name": "markdown",
+        "field_name": "debug",
+        "id_fields": 97,
+        "locale": "all",
+        "gender": "male",
+        "content": "0"
+      },
+      {
+        "id_styles": 6,
+        "style_name": "markdown",
+        "field_name": "data_config",
+        "id_fields": 145,
+        "locale": "all",
+        "gender": "male",
+        "content": "            "
+      },
+      {
+        "id_styles": 6,
+        "style_name": "markdown",
+        "field_name": "css_mobile",
+        "id_fields": 182,
+        "locale": "all",
+        "gender": "male",
+        "content": ""
+      },
+      {
+        "id_styles": 6,
+        "style_name": "markdown",
+        "field_name": "formula",
+        "id_fields": 294,
+        "locale": "all",
+        "gender": "male",
+        "content": "    [\r\n   {\r\n      \"formula\": \"get_current_date('Y-m-d')\",\r\n      \"result_holder\": \"current_date\"\r\n   },\r\n   {\r\n      \"formula\": \"calc_time_diff(get_current_date('Y-m-d'), time2, 'days')\",\r\n      \"result_holder\": \"remaining_days\",\r\n      \"variables\": {         \r\n         \"time2\": \"2024-01-28\"\r\n      }\r\n   }\r\n]"
+      }
+    ],
+    "children": []
+  },
+  "file_name": "selfhelp_section_191",
+  "time": "2024-01-24 11:48:41",
+  "platform": "selfhelp",
+  "version": {
+    "application": "v6.8.0",
+    "database": "v6.8.0"
+  }
+}

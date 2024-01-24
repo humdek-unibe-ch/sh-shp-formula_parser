@@ -1,3 +1,7 @@
+# v1.1.5
+ - properly return negative time when calculated with `calc_time_diff`
+ - add example for `calc_time_diff`
+
 # v1.1.4
  - add function `array_filter_by_value` used to filter array.
 

@@ -231,7 +231,7 @@ class CustomMathFunctions
                 }
 
                 $diff = (strtotime($time2) - strtotime($time1)) / $unit_val;
-                return $diff < 0 ? (24 + $diff) : $diff;
+                return $diff;
             } catch (Exception $e) {
                 return array("error" => $e->getMessage());
             }
