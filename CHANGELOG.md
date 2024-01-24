@@ -1,3 +1,6 @@
+# v1.2.0
+ - add `formula` field to style `loop`. Style loop was moved to the core SelfHelp in v5.4.0
+
 # v1.1.6
  - fix spaces in the `textarea`
 
