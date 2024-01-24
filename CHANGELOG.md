@@ -1,3 +1,6 @@
+# v1.1.6
+ - fix spaces in the `textarea`
+
 # v1.1.5
  - properly return negative time when calculated with `calc_time_diff`
  - add example for `calc_time_diff`
