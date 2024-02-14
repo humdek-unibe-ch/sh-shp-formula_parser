@@ -410,105 +410,113 @@ class MathExecutor
     protected function defaultFunctions() : array
     {
         return [
-          'abs' => static fn($arg) => \abs($arg),
-          'acos' => static fn($arg) => \acos($arg),
-          'acosh' => static fn($arg) => \acosh($arg),
-          'arcsin' => static fn($arg) => \asin($arg),
-          'arcctg' => static fn($arg) => M_PI / 2 - \atan($arg),
-          'arccot' => static fn($arg) => M_PI / 2 - \atan($arg),
-          'arccotan' => static fn($arg) => M_PI / 2 - \atan($arg),
-          'arcsec' => static fn($arg) => \acos(1 / $arg),
-          'arccosec' => static fn($arg) => \asin(1 / $arg),
-          'arccsc' => static fn($arg) => \asin(1 / $arg),
-          'arccos' => static fn($arg) => \acos($arg),
-          'arctan' => static fn($arg) => \atan($arg),
-          'arctg' => static fn($arg) => \atan($arg),
-          'array' => static fn(...$args) => $args,
-          'asin' => static fn($arg) => \asin($arg),
-          'atan' => static fn($arg) => \atan($arg),
-          'atan2' => static fn($arg1, $arg2) => \atan2($arg1, $arg2),
-          'atanh' => static fn($arg) => \atanh($arg),
-          'atn' => static fn($arg) => \atan($arg),
-          'avg' => static function($arg1, ...$args) {
-              if (\is_array($arg1)){
-                  if (0 === \count($arg1)){
-                      throw new \InvalidArgumentException('Array must contain at least one element!');
-                  }
+            'abs' => static fn ($arg) => \abs($arg),
+            'acos' => static fn ($arg) => \acos($arg),
+            'acosh' => static fn ($arg) => \acosh($arg),
+            'arcsin' => static fn ($arg) => \asin($arg),
+            'arcctg' => static fn ($arg) => M_PI / 2 - \atan($arg),
+            'arccot' => static fn ($arg) => M_PI / 2 - \atan($arg),
+            'arccotan' => static fn ($arg) => M_PI / 2 - \atan($arg),
+            'arcsec' => static fn ($arg) => \acos(1 / $arg),
+            'arccosec' => static fn ($arg) => \asin(1 / $arg),
+            'arccsc' => static fn ($arg) => \asin(1 / $arg),
+            'arccos' => static fn ($arg) => \acos($arg),
+            'arctan' => static fn ($arg) => \atan($arg),
+            'arctg' => static fn ($arg) => \atan($arg),
+            'array' => static fn (...$args) => $args,
+            'asin' => static fn ($arg) => \asin($arg),
+            'atan' => static fn ($arg) => \atan($arg),
+            'atan2' => static fn ($arg1, $arg2) => \atan2($arg1, $arg2),
+            'atanh' => static fn ($arg) => \atanh($arg),
+            'atn' => static fn ($arg) => \atan($arg),
+            'avg' => static function ($arg1, ...$args) {
+                if (\is_array($arg1)) {
+                    if (0 === \count($arg1)) {
+                        throw new \InvalidArgumentException('Array must contain at least one element!');
+                    }
 
-                  return \array_sum($arg1) / \count($arg1);
-              }
+                    return \array_sum($arg1) / \count($arg1);
+                }
 
-              $args = [$arg1, ...$args];
+                $args = [$arg1, ...$args];
 
-              return \array_sum($args) / \count($args);
-          },
-          'bindec' => static fn($arg) => \bindec($arg),
-          'ceil' => static fn($arg) => \ceil($arg),
-          'cos' => static fn($arg) => \cos($arg),
-          'cosec' => static fn($arg) => 1 / \sin($arg),
-          'csc' => static fn($arg) => 1 / \sin($arg),
-          'cosh' => static fn($arg) => \cosh($arg),
-          'ctg' => static fn($arg) => \cos($arg) / \sin($arg),
-          'cot' => static fn($arg) => \cos($arg) / \sin($arg),
-          'cotan' => static fn($arg) => \cos($arg) / \sin($arg),
-          'cotg' => static fn($arg) => \cos($arg) / \sin($arg),
-          'ctn' => static fn($arg) => \cos($arg) / \sin($arg),
-          'decbin' => static fn($arg) => \decbin($arg),
-          'dechex' => static fn($arg) => \dechex($arg),
-          'decoct' => static fn($arg) => \decoct($arg),
-          'deg2rad' => static fn($arg) => \deg2rad($arg),
-          'exp' => static fn($arg) => \exp($arg),
-          'expm1' => static fn($arg) => \expm1($arg),
-          'floor' => static fn($arg) => \floor($arg),
-          'fmod' => static fn($arg1, $arg2) => \fmod($arg1, $arg2),
-          'hexdec' => static fn($arg) => \hexdec($arg),
-          'hypot' => static fn($arg1, $arg2) => \hypot($arg1, $arg2),
-          'if' => function($expr, $trueval, $falseval) {
-              if (true === $expr || false === $expr) {
-                  $exres = $expr;
-              } else {
-                  $exres = $this->execute($expr);
-              }
+                return \array_sum($args) / \count($args);
+            },
+            'bindec' => static fn ($arg) => \bindec($arg),
+            'ceil' => static fn ($arg) => \ceil($arg),
+            'cos' => static fn ($arg) => \cos($arg),
+            'cosec' => static fn ($arg) => 1 / \sin($arg),
+            'csc' => static fn ($arg) => 1 / \sin($arg),
+            'cosh' => static fn ($arg) => \cosh($arg),
+            'ctg' => static fn ($arg) => \cos($arg) / \sin($arg),
+            'cot' => static fn ($arg) => \cos($arg) / \sin($arg),
+            'cotan' => static fn ($arg) => \cos($arg) / \sin($arg),
+            'cotg' => static fn ($arg) => \cos($arg) / \sin($arg),
+            'ctn' => static fn ($arg) => \cos($arg) / \sin($arg),
+            'decbin' => static fn ($arg) => \decbin($arg),
+            'dechex' => static fn ($arg) => \dechex($arg),
+            'decoct' => static fn ($arg) => \decoct($arg),
+            'deg2rad' => static fn ($arg) => \deg2rad($arg),
+            'exp' => static fn ($arg) => \exp($arg),
+            'expm1' => static fn ($arg) => \expm1($arg),
+            'floor' => static fn ($arg) => \floor($arg),
+            'fmod' => static fn ($arg1, $arg2) => \fmod($arg1, $arg2),
+            'hexdec' => static fn ($arg) => \hexdec($arg),
+            'hypot' => static fn ($arg1, $arg2) => \hypot($arg1, $arg2),
+            'if' => function ($expr, $trueval, $falseval) {
+                if (true === $expr || false === $expr) {
+                    $exres = $expr;
+                } else {
+                    $exres = $this->execute($expr);
+                }
 
-              if ($exres) {
-                  return $this->execute($trueval);
-              }
+                if ($exres) {
+                    try {
+                        return $this->execute($trueval);
+                    } catch (\Throwable $th) {
+                        return $trueval;
+                    }
+                }
 
-              return $this->execute($falseval);
-          },
-          'intdiv' => static fn($arg1, $arg2) => \intdiv($arg1, $arg2),
-          'ln' => static fn($arg) => \log($arg),
-          'lg' => static fn($arg) => \log10($arg),
-          'log' => static fn($arg) => \log($arg),
-          'log10' => static fn($arg) => \log10($arg),
-          'log1p' => static fn($arg) => \log1p($arg),
-          'max' => static function($arg1, ...$args) {
-              if (\is_array($arg1) && 0 === \count($arg1)){
-                      throw new \InvalidArgumentException('Array must contain at least one element!');
-              }
+                try {
+                    return $this->execute($falseval);
+                } catch (\Throwable $th) {
+                    return $falseval;
+                }
+            },
+            'intdiv' => static fn ($arg1, $arg2) => \intdiv($arg1, $arg2),
+            'ln' => static fn ($arg) => \log($arg),
+            'lg' => static fn ($arg) => \log10($arg),
+            'log' => static fn ($arg) => \log($arg),
+            'log10' => static fn ($arg) => \log10($arg),
+            'log1p' => static fn ($arg) => \log1p($arg),
+            'max' => static function ($arg1, ...$args) {
+                if (\is_array($arg1) && 0 === \count($arg1)) {
+                    throw new \InvalidArgumentException('Array must contain at least one element!');
+                }
 
-              return \max(\is_array($arg1) ? $arg1 : [$arg1, ...$args]);
-          },
-          'min' => static function($arg1, ...$args) {
-              if (\is_array($arg1) && 0 === \count($arg1)){
-                  throw new \InvalidArgumentException('Array must contain at least one element!');
-              }
+                return \max(\is_array($arg1) ? $arg1 : [$arg1, ...$args]);
+            },
+            'min' => static function ($arg1, ...$args) {
+                if (\is_array($arg1) && 0 === \count($arg1)) {
+                    throw new \InvalidArgumentException('Array must contain at least one element!');
+                }
 
-              return \min(\is_array($arg1) ? $arg1 : [$arg1, ...$args]);
-          },
-          'octdec' => static fn($arg) => \octdec($arg),
-          'pi' => static fn() => M_PI,
-          'pow' => static fn($arg1, $arg2) => $arg1 ** $arg2,
-          'rad2deg' => static fn($arg) => \rad2deg($arg),
-          'round' => static fn($num, int $precision = 0) => \round($num, $precision),
-          'sin' => static fn($arg) => \sin($arg),
-          'sinh' => static fn($arg) => \sinh($arg),
-          'sec' => static fn($arg) => 1 / \cos($arg),
-          'sqrt' => static fn($arg) => \sqrt($arg),
-          'tan' => static fn($arg) => \tan($arg),
-          'tanh' => static fn($arg) => \tanh($arg),
-          'tn' => static fn($arg) => \tan($arg),
-          'tg' => static fn($arg) => \tan($arg)
+                return \min(\is_array($arg1) ? $arg1 : [$arg1, ...$args]);
+            },
+            'octdec' => static fn ($arg) => \octdec($arg),
+            'pi' => static fn () => M_PI,
+            'pow' => static fn ($arg1, $arg2) => $arg1 ** $arg2,
+            'rad2deg' => static fn ($arg) => \rad2deg($arg),
+            'round' => static fn ($num, int $precision = 0) => \round($num, $precision),
+            'sin' => static fn ($arg) => \sin($arg),
+            'sinh' => static fn ($arg) => \sinh($arg),
+            'sec' => static fn ($arg) => 1 / \cos($arg),
+            'sqrt' => static fn ($arg) => \sqrt($arg),
+            'tan' => static fn ($arg) => \tan($arg),
+            'tanh' => static fn ($arg) => \tanh($arg),
+            'tn' => static fn ($arg) => \tan($arg),
+            'tg' => static fn ($arg) => \tan($arg)
         ];
     }
 

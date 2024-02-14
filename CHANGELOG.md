@@ -1,3 +1,6 @@
+# v1.3.1
+ - in `if` statement return result as string if it cannot be executed
+
 # v1.3.0
  - update priority for the Formula parser hooks to be with higher priority
 
