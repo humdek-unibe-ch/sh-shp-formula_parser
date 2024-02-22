@@ -1,3 +1,6 @@
+# v1.3.2
+ - load plugin version using `BaseHook` class
+
 # v1.3.1
  - in `if` statement return result as string if it cannot be executed
 
