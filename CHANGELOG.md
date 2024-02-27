@@ -1,3 +1,6 @@
+# v1.3.3
+ - properly load `.json` schema
+
 # v1.3.2
  - load plugin version using `BaseHook` class
 

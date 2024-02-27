@@ -1,4 +1,3 @@
-const FORMULA_SCHEMA_URL = "/server/plugins/formulaParser/schemas/formulaConfig/formulaConfig.json";
 var formulaConfigInitCalls = {};
 const formulaConfigInit = 'formulaConfigInit'
 
@@ -47,7 +46,9 @@ function initFormulaConfigBuilder() {
 function showFormulaConfigBuilder(json, monacoEditor) {
     var editor;
     var defValue = getFormulaConfigJson(json);
+    var plugin_folder = '';
     $('.formulaConfigBuilderBtn').each(function () {
+        plugin_folder = $(this).data('plugin-folder');
         $(this).off('click').click(() => {
             $(".formulaConfig_builder_modal_holder").modal({
                 backdrop: false
@@ -65,6 +66,7 @@ function showFormulaConfigBuilder(json, monacoEditor) {
             });
         });
     });
+    const FORMULA_SCHEMA_URL = "/server/plugins/" + plugin_folder + "/schemas/formulaConfig/formulaConfig.json";
     var schemaUrl = window.location.protocol + "//" + window.location.host + BASE_PATH + FORMULA_SCHEMA_URL;
     // get the schema with AJAX call
     $.ajax({

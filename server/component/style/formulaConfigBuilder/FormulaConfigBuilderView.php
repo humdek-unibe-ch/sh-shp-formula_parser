@@ -79,6 +79,22 @@ class FormulaConfigBuilderView extends FormFieldView
             ),
         ));
         $modal->output_content();
+        // Normalize the directory separator for the current operating system
+        $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, __DIR__);
+
+        // Split the path into parts
+        $pathParts = explode(DIRECTORY_SEPARATOR, $normalizedPath);
+
+        // Find the position of "plugins" in the path
+        $pluginsPosition = array_search('plugins', $pathParts);
+
+        // Check if "plugins" was found and if there is a next element in the array
+        if ($pluginsPosition !== false && isset($pathParts[$pluginsPosition + 1])) {
+            $folderAfterPlugins = $pathParts[$pluginsPosition + 1];
+            $plugin_folder = $folderAfterPlugins;
+        } else {
+            $plugin_folder = 'error';
+        }
         require __DIR__ . "/tpl_formula_config_builder.php";
     }
 
@@ -93,7 +109,7 @@ class FormulaConfigBuilderView extends FormFieldView
     {
         if (empty($local)) {
             if (DEBUG) {
-                $local = array( __DIR__ . "/js/formulaSurveyConfigBuilder.js");
+                $local = array(__DIR__ . "/js/formulaSurveyConfigBuilder.js");
             } else {
                 $local = array(__DIR__ . "/../../../../formulaParser/js/ext/formulaParser.min.js?v=" . rtrim(shell_exec("git describe --tags")));
             }
