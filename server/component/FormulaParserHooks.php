@@ -47,7 +47,7 @@ class FormulaParserHooks extends BaseHooks
      * The field which we are checking
      * @param string $json_formula
      * The json formula
-     * @return string
+     * @return object
      * Return the field content
      */
     private function calc_formula_values($json_formula)
@@ -56,7 +56,7 @@ class FormulaParserHooks extends BaseHooks
         try {
             $json_formula = json_decode($json_formula, true);
             if (!$json_formula) {
-                return array("debug" => array("error" => 'Not a valid JSON formula'));
+                return array("formula_debug" => array("error" => 'Not a valid JSON formula'));
             }
             $calculated_results = array();
             $this->executor->removeVars();
@@ -81,17 +81,16 @@ class FormulaParserHooks extends BaseHooks
                     }
                 }
             }
-            $calculated_results['debug'] = json_encode(
-                array(
-                    "calculated_results" => $calculated_results,
-                    "variables" => $this->executor->getVars(),
-                    "json_formula" => $json_formula
-                )
+            $calculated_results['formula_debug'] = array(
+                "calculated_results" => $calculated_results,
+                "variables" => $this->executor->getVars(),
+                "json_formula" => $json_formula
             );
+
             return $calculated_results;
         } catch (Exception $e) {
             // throw $th;
-            return array("debug" => array("error" => $e->getMessage()));
+            return array("formula_debug" => array("error" => $e->getMessage()));
         }
     }
 
@@ -142,8 +141,21 @@ class FormulaParserHooks extends BaseHooks
             "user_code" => $user_code
         ));
         $calc_formula_values = $this->calc_formula_values($formula_json);
+
+        // ADD DEBUG INFO 
+        $debug_data = $this->get_private_property(array(
+            "hookedClassInstance" => $args['hookedClassInstance'],
+            "propertyName" => "debug_data"
+        ));
+        $debug_data['formulaCalculation'] = $calc_formula_values;
+        $this->set_private_property(array(
+            "hookedClassInstance" => $args['hookedClassInstance'],
+            "propertyName" => "debug_data",
+            "propertyNewValue" => $debug_data,
+        ));
+        // ADD DEBUG INFO 
+
         foreach ($adjusted_fields as $field_name => $field) {
-            // if ($field['type'] != STYLE_TYPE_INTERNAL) {
             if ($field['content']) {
                 $field['content'] = $this->services->get_db()->replace_calced_values($field['content'], $calc_formula_values);
             }
@@ -154,6 +166,45 @@ class FormulaParserHooks extends BaseHooks
                 "arrayKey" => $field_name
             ));
         }
+    }
+
+    /**
+     * Calculate formula and set the value in interpolation_data
+     * @param array $args
+     * all the parameters
+     */
+    public function addFormulaCalc($args)
+    {
+        $res = $this->execute_private_method($args);
+        $fields = $this->get_private_property(array(
+            "hookedClassInstance" => $args['hookedClassInstance'],
+            "propertyName" => "db_fields"
+        ));
+        if (isset($fields['formula'])) {
+            $formula_json = $fields['formula']['content'];
+            $this->init_math_executor();
+            $calc_formula_values = $this->calc_formula_values($formula_json);
+            if (isset($fields['scope'])) {
+                // add the scope prefix is set
+                $scope = $fields['scope']['content'];
+                $scoped_values = array();
+                foreach ($calc_formula_values as $key => $value) {
+                    $scoped_values[$scope . '_' . $key] = $value;
+                }
+                $calc_formula_values = $scoped_values;
+            }
+            $res = array_merge($res, array(
+                "formulaCalculation" => $calc_formula_values
+            ));
+        } else {
+            return $res;
+        }
+        $this->set_private_property(array(
+            "hookedClassInstance" => $args['hookedClassInstance'],
+            "propertyName" => "interpolation_data",
+            "propertyNewValue" => $res,
+        ));
+        return $res;
     }
 
     /**
@@ -206,7 +257,7 @@ class FormulaParserHooks extends BaseHooks
         }
         return $res;
     }
-    
+
     /**
      * Get the plugin version
      */

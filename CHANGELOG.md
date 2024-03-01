@@ -1,3 +1,7 @@
+# v1.4.0 - Requires SelfHelp v6.10.0+
+ - add `formula` field to style `dataContainer`. Style loop was moved to the core SelfHelp in v6.10.0
+ - add `hooks` to show the formula results when `debug` is enabled
+
 # v1.3.3
  - properly load `.json` schema
 

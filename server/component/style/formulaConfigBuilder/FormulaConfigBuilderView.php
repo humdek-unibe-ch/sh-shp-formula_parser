@@ -111,7 +111,7 @@ class FormulaConfigBuilderView extends FormFieldView
             if (DEBUG) {
                 $local = array(__DIR__ . "/js/formulaSurveyConfigBuilder.js");
             } else {
-                $local = array(__DIR__ . "/../../../../formulaParser/js/ext/formulaParser.min.js?v=" . rtrim(shell_exec("git describe --tags")));
+                $local = array(__DIR__ . "/../../../js/ext/formulaParser.min.js?v=" . rtrim(shell_exec("git describe --tags")));
             }
         }
         return parent::get_js_includes($local);
