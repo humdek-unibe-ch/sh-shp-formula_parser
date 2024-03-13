@@ -54,6 +54,9 @@ class FormulaParserHooks extends BaseHooks
     {
         // replace the field content with the global variables
         try {
+            if (!$json_formula) {
+                return array("formula_debug" => array("error" => 'No formula config'));
+            }
             $json_formula = json_decode($json_formula, true);
             if (!$json_formula) {
                 return array("formula_debug" => array("error" => 'Not a valid JSON formula'));
@@ -189,9 +192,13 @@ class FormulaParserHooks extends BaseHooks
                 $scope = $fields['scope']['content'];
                 $scoped_values = array();
                 foreach ($calc_formula_values as $key => $value) {
-                    $scoped_values[$scope . '_' . $key] = $value;
+                    $scoped_key = $scope == "" ? $key : ($scope . '_' . $key); // add the scope only if it is set
+                    $scoped_values[$scoped_key] = $value;
                 }
                 $calc_formula_values = $scoped_values;
+            }
+            if (!$res) {
+                $res = array();
             }
             $res = array_merge($res, array(
                 "formulaCalculation" => $calc_formula_values

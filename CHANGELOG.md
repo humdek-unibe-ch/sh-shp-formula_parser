@@ -1,3 +1,6 @@
+# v1.4.1
+ - properly check if a formula is set when preparing the interpolation data
+
 # v1.4.0 - Requires SelfHelp v6.10.0+
  - add `formula` field to style `dataContainer`. Style loop was moved to the core SelfHelp in v6.10.0
  - add `hooks` to show the formula results when `debug` is enabled
