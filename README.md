@@ -6,7 +6,7 @@ The plugin uses (MathPHP)[https://github.com/markrogoyski/math-php] for addition
 Additional functions:
  - `sum` (for array) - pass array of values and return their sum
    - parameters: array with values
-   - examples: ``[
+   - examples: ```[
                   {
                       "formula": "sum(1,2,3)",
                       "result_holder": "sum"
@@ -15,7 +15,7 @@ Additional functions:
                       "formula": "sum([1,2,3])",
                       "result_holder": "sum2"
                   }
-              ]``
+              ]```
  - `order_array` -  reorder array
    - parameters: `arr`, `key` the name of the key that we will use for sorting, `sort_type` SORT_DESC or SORT_ASC
  - `normal_cdf` - calculate CDF - Normal distribution
@@ -39,7 +39,7 @@ Additional functions:
    - parameters: `format` - the date format of the current date, ex: `Y-m-d`, `d-m-Y`, `Y-m-d H:i`
  - `count` (for array) - pass array of values and return the length of the array
    - parameters: array with values
-   - examples: ``[
+   - examples: ```[
                     {
                         "formula": "count(array($arr))",
                         "result_holder": "arr1_length",
@@ -47,10 +47,10 @@ Additional functions:
                             "arr": "{{record_id}}"
                         }
                     }
-                ]``
+                ]```
 - `array_filter_by_value` filter array by value. 
   - parameters: `array` with values and `filter_value`
-  - examples: ``[
+  - examples: ```[
 	{
 		"formula": "array_filter_by_value(['1','2','1', '3'],$filtered_value)",
 		"result_holder": "filtered_array",
@@ -58,7 +58,7 @@ Additional functions:
 			"filtered_value": "1"
 		}
 	}
-]``
+]```
 
 
 # Installation
