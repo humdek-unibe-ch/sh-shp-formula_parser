@@ -38,7 +38,30 @@ Additional functions:
    - parameters: `arrays` - Send array which contain all required columns, `formula` The formula that we want to use. The passed arrays are looped and they are in the same loop cycle, which give us the row values. The columns can be used with [number], The first column will be [0], the second will be [1], the third one will be [2], etc
    - return: `array` - Each row execute the calculation and store it in another array which is returned at the end. This new value simulates a new column creation with modified values
  - `date_format` - format dates based on PHP (date_format)[https://www.php.net/manual/en/datetime.format.php] function
-   - parameters: `dates` a date or comma separated dates, `format` - the format that we will use
+   - parameters: 
+
+     - `dates` a date or comma separated dates, 
+     - `format` - the format that we will use
+
+   - examples:
+```
+[
+	{
+		"formula": "date_format('2023-12-22 14:23:29,2023-12-22 14:27:29', 'Y-m-d')",
+		"result_holder": "formatted_dates"
+	}
+]
+```
+
+```
+[
+	{
+		"formula": "date_format(['2023-12-22 14:23:29','2023-12-22 14:27:29'], 'Y-m-d')",
+		"result_holder": "formatted_dates"
+	}
+]
+```
+
  - `wrap_for_globals` - Wrap string or comma separated string (each item) in {{}}
    - parameters: `string` - the string that we want to wrap
  - `set_globals` - Search for global keywords and replace them
@@ -58,6 +81,21 @@ Additional functions:
 		"variables": {
 			"arr": "{{record_id}}"
 		}
+	}
+]
+```
+
+* `explode` PHP explode function
+    - parameters: 
+      - `string` - separator
+      - `string` - comma separated string
+    - examples: 
+
+```
+[
+	{
+		"formula": "explode('1,2,2,3,2,1',',')",
+		"result_holder": "exploded_array"		
 	}
 ]
 ```

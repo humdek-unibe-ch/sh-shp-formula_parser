@@ -294,10 +294,19 @@ class CustomMathFunctions
         $this->executor->addFunction('date_format', function ($date, $format) {
             try {
                 $res = array();
-                $dates = explode(',', $date);
+                $return_arr = false;
+                if (is_array($date)) {
+                    $dates = $date;
+                    $return_arr = true;
+                } else {
+                    $dates = explode(',', $date);
+                }
                 foreach ($dates as $key => $value) {
                     $date_obj = date_create($value);
                     $res[] = date_format($date_obj, $format);
+                }
+                if($return_arr){
+                    return "[". implode(',', array_map(function($item) { return '"'.$item.'"'; }, $res))."]";
                 }
                 return implode(',', $res);
             } catch (Exception $e) {

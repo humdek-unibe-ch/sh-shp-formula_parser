@@ -1,5 +1,6 @@
-# v1.4.2 (unpublished)
+# v1.4.2
  - improve `README.md` formatting
+ - improve `date_format`, now it checks if an `array` or comma separated string is passed. Return the same type based on the passed variable, wither array or a comma separated string.
 
 # v1.4.1
  - properly check if a formula is set when preparing the interpolation data
