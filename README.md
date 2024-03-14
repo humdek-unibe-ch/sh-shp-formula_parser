@@ -6,7 +6,8 @@ The plugin uses (MathPHP)[https://github.com/markrogoyski/math-php] for addition
 Additional functions:
  - `sum` (for array) - pass array of values and return their sum
    - parameters: array with values
-   - examples: ```[
+   - examples: ```JSON 
+   [
                   {
                       "formula": "sum(1,2,3)",
                       "result_holder": "sum"
