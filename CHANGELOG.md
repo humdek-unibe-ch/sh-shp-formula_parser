@@ -1,3 +1,6 @@
+# v1.4.2 (unpublished)
+ - improve `README.md` formatting
+
 # v1.4.1
  - properly check if a formula is set when preparing the interpolation data
 
