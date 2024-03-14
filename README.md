@@ -6,7 +6,7 @@ The plugin uses (MathPHP)[https://github.com/markrogoyski/math-php] for addition
 Additional functions:
  - `sum` (for array) - pass array of values and return their sum
    - parameters: array with values
-   - examples: `[
+   - examples: ``[
                   {
                       "formula": "sum(1,2,3)",
                       "result_holder": "sum"
@@ -15,7 +15,7 @@ Additional functions:
                       "formula": "sum([1,2,3])",
                       "result_holder": "sum2"
                   }
-              ]`
+              ]``
  - `order_array` -  reorder array
    - parameters: `arr`, `key` the name of the key that we will use for sorting, `sort_type` SORT_DESC or SORT_ASC
  - `normal_cdf` - calculate CDF - Normal distribution
