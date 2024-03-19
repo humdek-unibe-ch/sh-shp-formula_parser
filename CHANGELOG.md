@@ -1,3 +1,6 @@
+# v1.4.3
+ - properly return `array` in `if` statement
+
 # v1.4.2
  - improve `README.md` formatting
  - improve `date_format`, now it checks if an `array` or comma separated string is passed. Return the same type based on the passed variable, wither array or a comma separated string.

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the MathExecutor package
  *
@@ -76,7 +77,7 @@ class MathExecutor
      *
      * @return MathExecutor
      */
-    public function addOperator(Operator $operator) : self
+    public function addOperator(Operator $operator): self
     {
         $this->operators[$operator->operator] = $operator;
 
@@ -96,7 +97,7 @@ class MathExecutor
     {
         $cacheKey = $expression;
 
-        if (! \array_key_exists($cacheKey, $this->cache)) {
+        if (!\array_key_exists($cacheKey, $this->cache)) {
             $tokens = (new Tokenizer($expression, $this->operators))->tokenize()->buildReversePolishNotation();
 
             if ($cache) {
@@ -121,7 +122,7 @@ class MathExecutor
      * @throws Exception\IncorrectNumberOfFunctionParametersException
      * @return MathExecutor
      */
-    public function addFunction(string $name, ?callable $function = null) : self
+    public function addFunction(string $name, ?callable $function = null): self
     {
         $this->functions[$name] = new CustomFunction($name, $function);
 
@@ -133,7 +134,7 @@ class MathExecutor
      *
      * @return array<string, float|string>
      */
-    public function getVars() : array
+    public function getVars(): array
     {
         return $this->variables;
     }
@@ -146,7 +147,7 @@ class MathExecutor
      */
     public function getVar(string $variable)
     {
-        if (! \array_key_exists($variable, $this->variables)) {
+        if (!\array_key_exists($variable, $this->variables)) {
             if ($this->onVarNotFound) {
                 return \call_user_func($this->onVarNotFound, $variable);
             }
@@ -163,7 +164,7 @@ class MathExecutor
      * @throws MathExecutorException if the value is invalid based on the default or custom validator
      * @return MathExecutor
      */
-    public function setVar(string $variable, $value) : self
+    public function setVar(string $variable, $value): self
     {
         if ($this->onVarValidation) {
             \call_user_func($this->onVarValidation, $variable, $value);
@@ -178,7 +179,7 @@ class MathExecutor
      * Test to see if a variable exists
      *
      */
-    public function varExists(string $variable) : bool
+    public function varExists(string $variable): bool
     {
         return \array_key_exists($variable, $this->variables);
     }
@@ -191,7 +192,7 @@ class MathExecutor
      * @throws \Exception
      * @return MathExecutor
      */
-    public function setVars(array $variables, bool $clear = true) : self
+    public function setVars(array $variables, bool $clear = true): self
     {
         if ($clear) {
             $this->removeVars();
@@ -211,7 +212,7 @@ class MathExecutor
      *
      * @return MathExecutor
      */
-    public function setVarNotFoundHandler(callable $handler) : self
+    public function setVarNotFoundHandler(callable $handler): self
     {
         $this->onVarNotFound = $handler;
 
@@ -227,7 +228,7 @@ class MathExecutor
      *
      * @return MathExecutor
      */
-    public function setVarValidationHandler(?callable $handler) : self
+    public function setVarValidationHandler(?callable $handler): self
     {
         $this->onVarValidation = $handler;
 
@@ -239,7 +240,7 @@ class MathExecutor
      *
      * @return MathExecutor
      */
-    public function removeVar(string $variable) : self
+    public function removeVar(string $variable): self
     {
         unset($this->variables[$variable]);
 
@@ -250,7 +251,7 @@ class MathExecutor
      * Remove all variables and the variable not found handler
      * @return MathExecutor
      */
-    public function removeVars() : self
+    public function removeVars(): self
     {
         $this->variables = [];
         $this->onVarNotFound = null;
@@ -263,7 +264,7 @@ class MathExecutor
      *
      * @return array<Operator> of operator class names
      */
-    public function getOperators() : array
+    public function getOperators(): array
     {
         return $this->operators;
     }
@@ -274,7 +275,7 @@ class MathExecutor
      * @return array<string, CustomFunction> containing callback and places indexed by
      *         function name
      */
-    public function getFunctions() : array
+    public function getFunctions(): array
     {
         return $this->functions;
     }
@@ -284,7 +285,7 @@ class MathExecutor
      *
      * @return array<Operator> of operator class names
      */
-    public function removeOperator(string $operator) : self
+    public function removeOperator(string $operator): self
     {
         unset($this->operators[$operator]);
 
@@ -294,9 +295,9 @@ class MathExecutor
     /**
      * Set division by zero returns zero instead of throwing DivisionByZeroException
      */
-    public function setDivisionByZeroIsZero() : self
+    public function setDivisionByZeroIsZero(): self
     {
-        $this->addOperator(new Operator('/', false, 180, static fn($a, $b) => 0 == $b ? 0 : $a / $b));
+        $this->addOperator(new Operator('/', false, 180, static fn ($a, $b) => 0 == $b ? 0 : $a / $b));
 
         return $this;
     }
@@ -305,7 +306,7 @@ class MathExecutor
      * Get cache array with tokens
      * @return array<string, Token[]>
      */
-    public function getCache() : array
+    public function getCache(): array
     {
         return $this->cache;
     }
@@ -313,39 +314,39 @@ class MathExecutor
     /**
      * Clear token's cache
      */
-    public function clearCache() : self
+    public function clearCache(): self
     {
         $this->cache = [];
 
         return $this;
     }
 
-    public function useBCMath(int $scale = 2) : self
+    public function useBCMath(int $scale = 2): self
     {
-      \bcscale($scale);
-      $this->addOperator(new Operator('+', false, 170, static fn($a, $b) => \bcadd("{$a}", "{$b}")));
-      $this->addOperator(new Operator('-', false, 170, static fn($a, $b) => \bcsub("{$a}", "{$b}")));
-      $this->addOperator(new Operator('uNeg', false, 200, static fn($a) => \bcsub('0.0', "{$a}")));
-      $this->addOperator(new Operator('*', false, 180, static fn($a, $b) => \bcmul("{$a}", "{$b}")));
-      $this->addOperator(new Operator('/', false, 180, static function($a, $b) {
-          /** @todo PHP8: Use throw as expression -> static fn($a, $b) => 0 == $b ? throw new DivisionByZeroException() : $a / $b */
-          if (0 == $b) {
-              throw new DivisionByZeroException();
-          }
+        \bcscale($scale);
+        $this->addOperator(new Operator('+', false, 170, static fn ($a, $b) => \bcadd("{$a}", "{$b}")));
+        $this->addOperator(new Operator('-', false, 170, static fn ($a, $b) => \bcsub("{$a}", "{$b}")));
+        $this->addOperator(new Operator('uNeg', false, 200, static fn ($a) => \bcsub('0.0', "{$a}")));
+        $this->addOperator(new Operator('*', false, 180, static fn ($a, $b) => \bcmul("{$a}", "{$b}")));
+        $this->addOperator(new Operator('/', false, 180, static function ($a, $b) {
+            /** @todo PHP8: Use throw as expression -> static fn($a, $b) => 0 == $b ? throw new DivisionByZeroException() : $a / $b */
+            if (0 == $b) {
+                throw new DivisionByZeroException();
+            }
 
-          return \bcdiv("{$a}", "{$b}");
-      }));
-      $this->addOperator(new Operator('^', true, 220, static fn($a, $b) => \bcpow("{$a}", "{$b}")));
-      $this->addOperator(new Operator('%', false, 180, static fn($a, $b) => \bcmod("{$a}", "{$b}")));
+            return \bcdiv("{$a}", "{$b}");
+        }));
+        $this->addOperator(new Operator('^', true, 220, static fn ($a, $b) => \bcpow("{$a}", "{$b}")));
+        $this->addOperator(new Operator('%', false, 180, static fn ($a, $b) => \bcmod("{$a}", "{$b}")));
 
-      return $this;
+        return $this;
     }
 
     /**
      * Set default operands and functions
      * @throws ReflectionException
      */
-    protected function addDefaults() : self
+    protected function addDefaults(): self
     {
         foreach ($this->defaultOperators() as $name => $operator) {
             [$callable, $priority, $isRightAssoc] = $operator;
@@ -367,37 +368,38 @@ class MathExecutor
      *
      * @return array<string, array{callable, int, bool}>
      */
-    protected function defaultOperators() : array
+    protected function defaultOperators(): array
     {
         return [
-          '+' => [static fn($a, $b) => $a + $b, 170, false],
-          '-' => [static fn($a, $b) => $a - $b, 170, false],
-          // unary positive token
-          'uPos' => [static fn($a) => $a, 200, false],
-          // unary minus token
-          'uNeg' => [static fn($a) => 0 - $a, 200, false],
-          '*' => [static fn($a, $b) => $a * $b, 180, false],
-          '/' => [
-            static function($a, $b) { /** @todo PHP8: Use throw as expression -> static fn($a, $b) => 0 == $b ? throw new DivisionByZeroException() : $a / $b */
-                if (0 == $b) {
-                    throw new DivisionByZeroException();
-                }
+            '+' => [static fn ($a, $b) => $a + $b, 170, false],
+            '-' => [static fn ($a, $b) => $a - $b, 170, false],
+            // unary positive token
+            'uPos' => [static fn ($a) => $a, 200, false],
+            // unary minus token
+            'uNeg' => [static fn ($a) => 0 - $a, 200, false],
+            '*' => [static fn ($a, $b) => $a * $b, 180, false],
+            '/' => [
+                static function ($a, $b) {
+                    /** @todo PHP8: Use throw as expression -> static fn($a, $b) => 0 == $b ? throw new DivisionByZeroException() : $a / $b */
+                    if (0 == $b) {
+                        throw new DivisionByZeroException();
+                    }
 
-                return $a / $b;
-            },
-            180,
-            false
-          ],
-          '^' => [static fn($a, $b) => \pow($a, $b), 220, true],
-          '%' => [static fn($a, $b) => $a % $b, 180, false],
-          '&&' => [static fn($a, $b) => $a && $b, 100, false],
-          '||' => [static fn($a, $b) => $a || $b, 90, false],
-          '==' => [static fn($a, $b) => \is_string($a) || \is_string($b) ? 0 == \strcmp($a, $b) : $a == $b, 140, false],
-          '!=' => [static fn($a, $b) => \is_string($a) || \is_string($b) ? 0 != \strcmp($a, $b) : $a != $b, 140, false],
-          '>=' => [static fn($a, $b) => $a >= $b, 150, false],
-          '>' => [static fn($a, $b) => $a > $b, 150, false],
-          '<=' => [static fn($a, $b) => $a <= $b, 150, false],
-          '<' => [static fn($a, $b) => $a < $b, 150, false],
+                    return $a / $b;
+                },
+                180,
+                false
+            ],
+            '^' => [static fn ($a, $b) => \pow($a, $b), 220, true],
+            '%' => [static fn ($a, $b) => $a % $b, 180, false],
+            '&&' => [static fn ($a, $b) => $a && $b, 100, false],
+            '||' => [static fn ($a, $b) => $a || $b, 90, false],
+            '==' => [static fn ($a, $b) => \is_string($a) || \is_string($b) ? 0 == \strcmp($a, $b) : $a == $b, 140, false],
+            '!=' => [static fn ($a, $b) => \is_string($a) || \is_string($b) ? 0 != \strcmp($a, $b) : $a != $b, 140, false],
+            '>=' => [static fn ($a, $b) => $a >= $b, 150, false],
+            '>' => [static fn ($a, $b) => $a > $b, 150, false],
+            '<=' => [static fn ($a, $b) => $a <= $b, 150, false],
+            '<' => [static fn ($a, $b) => $a < $b, 150, false],
         ];
     }
 
@@ -407,7 +409,7 @@ class MathExecutor
      *
      * @return array<callable>
      */
-    protected function defaultFunctions() : array
+    protected function defaultFunctions(): array
     {
         return [
             'abs' => static fn ($arg) => \abs($arg),
@@ -472,6 +474,9 @@ class MathExecutor
 
                 if ($exres) {
                     try {
+                        if (is_array($trueval)) {
+                            return $trueval;
+                        }
                         return $this->execute($trueval);
                     } catch (\Throwable $th) {
                         return $trueval;
@@ -479,6 +484,9 @@ class MathExecutor
                 }
 
                 try {
+                    if (is_array($trueval)) {
+                        return $trueval;
+                    }
                     return $this->execute($falseval);
                 } catch (\Throwable $th) {
                     return $falseval;
@@ -525,11 +533,11 @@ class MathExecutor
      *
      * @return array<string, float>
      */
-    protected function defaultVars() : array
+    protected function defaultVars(): array
     {
         return [
-          'pi' => 3.14159265359,
-          'e' => 2.71828182846
+            'pi' => 3.14159265359,
+            'e' => 2.71828182846
         ];
     }
 
@@ -537,9 +545,9 @@ class MathExecutor
      * Default variable validation, ensures that the value is a scalar or array.
      * @throws MathExecutorException if the value is not a scalar
      */
-    protected function defaultVarValidation(string $variable, $value) : void
+    protected function defaultVarValidation(string $variable, $value): void
     {
-        if (! \is_scalar($value) && ! \is_array($value) && null !== $value) {
+        if (!\is_scalar($value) && !\is_array($value) && null !== $value) {
             $type = \gettype($value);
 
             throw new MathExecutorException("Variable ({$variable}) type ({$type}) is not scalar or array!");
