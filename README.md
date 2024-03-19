@@ -117,6 +117,28 @@ Additional functions:
 ]
 ```
 
+* `modify_date` modify a date or array of dates
+  + parameters: 
+    - `date` - string or array with multiple dates
+    - `current_format` - string the current format of the date
+    - `modification`- string for modifying the date. [Examples](https://www.php.net/manual/en/datetime.modify.php)
+    - `new_format` -  if not set it will use the `current_format`
+
+  + examples: 
+
+```
+[
+   {
+      "formula": "modify_date(['2024-03-19', '2024-03-22'], 'Y-m-d', '+1 day', 'Y-M-D')",
+      "result_holder": "mod_date"
+   },
+   {
+      "formula": "modify_date('2024-03-19', 'Y-m-d', '+5 day')",
+      "result_holder": "sing_d"
+   }
+]
+```
+
 # Installation
 
  - Download the code into the `plugin` folder

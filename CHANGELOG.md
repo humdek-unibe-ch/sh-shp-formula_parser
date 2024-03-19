@@ -1,5 +1,10 @@
 # v1.4.3
  - properly return `array` in `if` statement
+ - #2 add function `modify_date` - the function expects 3 or 4 parameters.  
+   - `date` - string or array with multiple dates 
+   - `current_format` - string the current format of the date
+   - `modification`- string for modifying the date. [Examples](https://www.php.net/manual/en/datetime.modify.php)
+   - `new_format` -  if not set it will use the `current_format`
 
 # v1.4.2
  - improve `README.md` formatting

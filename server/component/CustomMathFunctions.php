@@ -305,8 +305,10 @@ class CustomMathFunctions
                     $date_obj = date_create($value);
                     $res[] = date_format($date_obj, $format);
                 }
-                if($return_arr){
-                    return "[". implode(',', array_map(function($item) { return '"'.$item.'"'; }, $res))."]";
+                if ($return_arr) {
+                    return "[" . implode(',', array_map(function ($item) {
+                        return '"' . $item . '"';
+                    }, $res)) . "]";
                 }
                 return implode(',', $res);
             } catch (Exception $e) {
@@ -398,6 +400,57 @@ class CustomMathFunctions
     }
 
     /**
+     * Modifies a single date based on the provided format, modification, and optionally a new format.
+     * 
+     * @param string $dateString The date string to modify.
+     * @param string $current_format The format of the input date string.
+     * @param string $modification The modification to apply to the date (e.g., +1 day, -1 hour).
+     * @param string|null $new_format Optional. The format for the modified date string. If not provided, the original format is used.
+     * 
+     * @return string|array Returns the modified date string or an array containing an error message if parsing fails.
+     */
+    private function modifySingleDate($dateString, $current_format, $modification, $new_format)
+    {
+        $dateTime = DateTime::createFromFormat($current_format, $dateString);
+
+        if (!$dateTime) {
+            return array("error" => "Invalid date string: $dateString");
+        }
+
+        $dateTime->modify($modification);
+
+        return $dateTime->format($new_format ? $new_format : $current_format);
+    }
+
+    /**
+     * Sets up the 'modify_date' function for execution.
+     * 
+     * This function adds the 'modify_date' function to the executor, which can modify a single date or an array of dates
+     * based on the provided format, modification, and optionally a new format. It relies on the 'modifySingleDate' 
+     * function for handling individual date modifications.
+     * 
+     * @return void
+     */
+    private function set_function_modify_date()
+    {
+        $this->executor->addFunction('modify_date', function ($date, $current_format, $modification, $new_format = null) {
+            try {
+                if (is_array($date)) {
+                    $modifiedDates = [];
+                    foreach ($date as $singleDate) {
+                        $modifiedDates[] = $this->modifySingleDate($singleDate, $current_format, $modification, $new_format);
+                    }
+                    return $modifiedDates;
+                } else {
+                    return $this->modifySingleDate($date, $current_format, $modification, $new_format);
+                }
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
+    /**
      * Set all custom functions that we want to add to the math executor
      */
     private function set_math_functions()
@@ -417,6 +470,7 @@ class CustomMathFunctions
         $this->set_function_get_current_date();
         $this->set_function_count();
         $this->set_function_array_filter_by_value();
+        $this->set_function_modify_date();
     }
 
     /* Public Methods *********************************************************/
