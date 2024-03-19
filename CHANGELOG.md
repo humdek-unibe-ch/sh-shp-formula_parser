@@ -1,3 +1,6 @@
+# v1.5.0
+ - remove `hook` `formula-calc-get-debug`
+
 # v1.4.3
  - properly return `array` in `if` statement
  - #2 add function `modify_date` - the function expects 3 or 4 parameters.  
