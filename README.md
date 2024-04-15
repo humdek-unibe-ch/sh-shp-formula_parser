@@ -1,7 +1,8 @@
 # SelfHelp plugin - Formula Parser
 
-The plugin is based on (MathExecutor)[https://github.com/neonxp/MathExecutor]. It supports all the operators and functions that are supported in `MathExecutor` .
-The plugin uses (MathPHP)[https://github.com/markrogoyski/math-php] for additional math functions
+The plugin extends the syle `markdown` to enable mathematical formulas. Use the field `formula` of the style `markdown` to define the mathematical operations.
+The plugin is based on (MathExecutor)[https://github.com/neonxp/MathExecutor]. It supports all the operators and functions that are supported in `MathExecutor`.
+The plugin uses (MathPHP)[https://github.com/markrogoyski/math-php] for additional math functions.
 
 Additional functions:
  - `sum` (for array) - pass array of values and return their sum
