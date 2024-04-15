@@ -141,7 +141,7 @@ Additional functions:
 
 # Installation
 
- - Download the code into the `plugin` folder
+ - Download the code into the `sever/plugins` folder
  - Checkout the latest version 
  - Execute all `.sql` script in the DB folder in their version order
 
