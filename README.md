@@ -141,11 +141,11 @@ Additional functions:
 ```
 
 * `is_user_in_group` - check if the user is in a group
- + parameters: 
-  - `group_name` - the group name that we want to check
- + examples:
+  + parameters: 
+    - `group_name` - the group name that we want to check
+  + examples:
 
- ```
+```
 [
    {
       "formula": "is_user_in_group('subject')",
