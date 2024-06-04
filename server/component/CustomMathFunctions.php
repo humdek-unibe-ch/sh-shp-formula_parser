@@ -421,6 +421,17 @@ class CustomMathFunctions
 
         return $dateTime->format($new_format ? $new_format : $current_format);
     }
+    
+    /**
+     * Check if the user is in the group
+     * @param string $group_name - the group name
+     * @return boolean - return true or false if the user is in the group
+     */    
+    private function is_user_in_group($group_name)
+    {
+        $id_user = $_SESSION['id_user'] ? $_SESSION['id_user'] : 1;
+        return $this->services->get_condition()->get_user_group($group_name, $id_user);
+    }
 
     /**
      * Sets up the 'modify_date' function for execution.
@@ -451,6 +462,32 @@ class CustomMathFunctions
     }
 
     /**
+     * Sets up the 'modify_date' function for execution.
+     * 
+     * This function adds the 'modify_date' function to the executor, which can modify a single date or an array of dates
+     * based on the provided format, modification, and optionally a new format. It relies on the 'modifySingleDate' 
+     * function for handling individual date modifications.
+     * 
+     * @return void
+     */
+
+     /**
+     * Sets up the 'is_user_in_group' function for execution.
+     * This function adds the 'is_user_in_group' function to the executor, which return a boolean.
+     * @return void
+     */    
+    private function set_function_is_user_in_group()
+    {
+        $this->executor->addFunction('is_user_in_group', function ($group_name) {
+            try {
+                return $this->is_user_in_group($group_name);
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
+    /**
      * Set all custom functions that we want to add to the math executor
      */
     private function set_math_functions()
@@ -471,6 +508,7 @@ class CustomMathFunctions
         $this->set_function_count();
         $this->set_function_array_filter_by_value();
         $this->set_function_modify_date();
+        $this->set_function_is_user_in_group();
     }
 
     /* Public Methods *********************************************************/

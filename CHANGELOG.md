@@ -1,3 +1,6 @@
+# v1.5.1 - Requires SelfHelp v6.16.4+
+ - #8 add function `is_user_in_group`. It takes `group_name` as a `string` parameter. 
+
 # v1.5.0
  - remove `hook` `formula-calc-get-debug`
 

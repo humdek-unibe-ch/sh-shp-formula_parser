@@ -140,6 +140,20 @@ Additional functions:
 ]
 ```
 
+* `is_user_in_group` - check if the user is in a group
+ + parameters: 
+  - `group_name` - the group name that we want to check
+ + examples:
+
+ ```
+[
+   {
+      "formula": "is_user_in_group('subject')",
+      "result_holder": "is_in_subject"
+   }
+]
+ ``` 
+
 # Installation
 
  - Download the code into the `sever/plugins` folder
