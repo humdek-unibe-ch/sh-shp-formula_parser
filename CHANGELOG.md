@@ -1,3 +1,6 @@
+# v1.5.2
+ - accept `Boolean` variables as result and use them in later calculations
+
 # v1.5.1 - Requires SelfHelp v6.16.4+
  - #8 add function `is_user_in_group`. It takes `group_name` as a `string` parameter. 
 

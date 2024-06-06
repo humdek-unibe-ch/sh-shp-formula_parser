@@ -35,7 +35,7 @@ class CustomMathFunctions
         $this->set_math_functions();
         $this->executor->setVarValidationHandler(function (string $name, $variable) {
             // allow all scalars, array and null
-            if (is_numeric($variable) || is_array($variable) || is_string($variable)) {
+            if (is_numeric($variable) || is_array($variable) || is_string($variable) || is_bool($variable)) {
                 return;
             }
             throw new Exception("Invalid variable type");
