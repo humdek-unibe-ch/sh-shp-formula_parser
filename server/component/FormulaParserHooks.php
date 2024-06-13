@@ -192,7 +192,7 @@ class FormulaParserHooks extends BaseHooks
                 $scope = $fields['scope']['content'];
                 $scoped_values = array();
                 foreach ($calc_formula_values as $key => $value) {
-                    $scoped_key = $scope == "" ? $key : ($scope . '_' . $key); // add the scope only if it is set
+                    $scoped_key = $scope == "" ? $key : ($scope . '.' . $key); // add the scope only if it is set
                     $scoped_values[$scoped_key] = $value;
                 }
                 $calc_formula_values = $scoped_values;

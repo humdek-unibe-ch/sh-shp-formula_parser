@@ -1,3 +1,6 @@
+# v1.5.3 (Unpublished)
+ - change `scope` to be add it with `.` instead of `_` as prefix
+
 # v1.5.2
  - accept `Boolean` variables as result and use them in later calculations
 
