@@ -47,19 +47,23 @@ class FormulaParserHooks extends BaseHooks
      * The field which we are checking
      * @param string $json_formula
      * The json formula
-     * @return object
+     * @return array
      * Return the field content
      */
     private function calc_formula_values($json_formula)
     {
         // replace the field content with the global variables
         try {
+            $json_formula_orig = $json_formula;
             if (!$json_formula) {
                 return array("formula_debug" => array("error" => 'No formula config'));
             }
             $json_formula = json_decode($json_formula, true);
             if (!$json_formula) {
-                return array("formula_debug" => array("error" => 'Not a valid JSON formula'));
+                return array("formula_debug" => array(
+                    "error" => 'Not a valid JSON formula',
+                    "json_formula" => $json_formula_orig
+                ));
             }
             $calculated_results = array();
             $this->executor->removeVars();

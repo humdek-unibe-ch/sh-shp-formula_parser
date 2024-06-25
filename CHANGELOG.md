@@ -1,5 +1,6 @@
-# v1.5.3 (Unpublished)
+# v1.5.3
  - change `scope` to be add it with `.` instead of `_` as prefix
+ - better output for `debugging` when the json_formula fails;
 
 # v1.5.2
  - accept `Boolean` variables as result and use them in later calculations
