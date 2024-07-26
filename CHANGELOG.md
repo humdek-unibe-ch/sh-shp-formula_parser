@@ -1,3 +1,7 @@
+# v1.5.4
+### Bugfix
+ - for function `date_format`check if the parameter is a date string and if it is not return empty string as a result
+
 # v1.5.3
  - change `scope` to be add it with `.` instead of `_` as prefix
  - better output for `debugging` when the json_formula fails;

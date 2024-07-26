@@ -303,7 +303,7 @@ class CustomMathFunctions
                 }
                 foreach ($dates as $key => $value) {
                     $date_obj = date_create($value);
-                    $res[] = date_format($date_obj, $format);
+                    $res[] = !$date_obj ? '' : date_format($date_obj, $format);
                 }
                 if ($return_arr) {
                     return "[" . implode(',', array_map(function ($item) {
