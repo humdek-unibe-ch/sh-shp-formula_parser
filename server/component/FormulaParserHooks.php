@@ -131,21 +131,21 @@ class FormulaParserHooks extends BaseHooks
         ));
         $user_name = $model->db->fetch_user_name();
         $user_code = $model->db->get_user_code();
+        $user_email = $model->db->fetch_user_email();
         $data_config = isset($adjusted_fields['data_config']) ? json_encode($adjusted_fields['data_config']['content']) : null;
         if ($data_config) {
             // if data_config is set replace if there are any globals
             $data_config = str_replace('@user_code', $user_code, $data_config);
             $data_config = str_replace('@project', $_SESSION['project'], $data_config);
-            $data_config = str_replace('@user', $user_name, $data_config);
+            $data_config = str_replace('@user_email', $user_email, $data_config);
+            $data_config = str_replace('@user', $user_name, $data_config);            
             $data_config = json_decode($data_config, true);
         }
         $formula_json = $this->execute_private_method(array(
             "hookedClassInstance" => $model,
             "methodName" => "calc_dynamic_values",
             "field" => $fields[$formula_key],
-            "data_config" => $data_config ? $data_config : array(),
-            "user_name" => $user_name,
-            "user_code" => $user_code
+            "data_config" => $data_config ? $data_config : array()
         ));
         $calc_formula_values = $this->calc_formula_values($formula_json);
 
@@ -158,7 +158,7 @@ class FormulaParserHooks extends BaseHooks
         $this->set_private_property(array(
             "hookedClassInstance" => $args['hookedClassInstance'],
             "propertyName" => "debug_data",
-            "propertyNewValue" => $debug_data,
+            "propertyNewValue" => $debug_data
         ));
         // ADD DEBUG INFO 
 
