@@ -1,3 +1,6 @@
+# v1.5.6
+ - `date_format` is based on [IntlDateFormatter](https://www.php.net/manual/en/class.intldateformatter.php)
+
 # v1.5.5
 ### Bugfix
  - properly load dynamic values

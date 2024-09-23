@@ -295,6 +295,7 @@ class CustomMathFunctions
             try {
                 $res = array();
                 $return_arr = false;
+                $locale = $_SESSION['user_language_locale'];
                 if (is_array($date)) {
                     $dates = $date;
                     $return_arr = true;
@@ -303,7 +304,15 @@ class CustomMathFunctions
                 }
                 foreach ($dates as $key => $value) {
                     $date_obj = date_create($value);
-                    $res[] = !$date_obj ? '' : date_format($date_obj, $format);
+                    $formatter = new IntlDateFormatter(
+                        $locale,
+                        IntlDateFormatter::FULL,    // Adjust to your needs (FULL, LONG, MEDIUM, SHORT)
+                        IntlDateFormatter::NONE,    // Use NONE if you don't want to format time
+                        null,
+                        null,
+                        $format
+                    );
+                    $res[] = !$date_obj ? '' : $formatter->format($date_obj);
                 }
                 if ($return_arr) {
                     return "[" . implode(',', array_map(function ($item) {
@@ -421,12 +430,12 @@ class CustomMathFunctions
 
         return $dateTime->format($new_format ? $new_format : $current_format);
     }
-    
+
     /**
      * Check if the user is in the group
      * @param string $group_name - the group name
      * @return boolean - return true or false if the user is in the group
-     */    
+     */
     private function is_user_in_group($group_name)
     {
         $id_user = $_SESSION['id_user'] ? $_SESSION['id_user'] : 1;
@@ -471,11 +480,11 @@ class CustomMathFunctions
      * @return void
      */
 
-     /**
+    /**
      * Sets up the 'is_user_in_group' function for execution.
      * This function adds the 'is_user_in_group' function to the executor, which return a boolean.
      * @return void
-     */    
+     */
     private function set_function_is_user_in_group()
     {
         $this->executor->addFunction('is_user_in_group', function ($group_name) {
