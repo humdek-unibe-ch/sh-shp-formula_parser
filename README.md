@@ -118,6 +118,26 @@ Additional functions:
 ]
 ```
 
+* `array_filter_by_key_value` filter array of objects by key and value. 
+  + parameters: 
+    - `array` - the array to filter
+    - `key` - the key to filter by
+    - `value` - the value to filter by
+
+  + examples: 
+
+```
+[
+   {
+      "formula": "array_filter_by_key_value($arr,'subtaskDone', 'true')",
+      "result_holder": "filtered_array_by_key",
+      "variables": {
+         "arr": "[{\"subtaskName\":\"Sub1\",\"subtaskDescription\":\"sadasd\",\"subtaskDone\":\"true\"},{\"subtaskName\":\"Sub2\",\"subtaskDescription\":\"asdad\",\"subtaskDone\":\"false\"}]"
+      }
+   }
+]
+```
+
 * `modify_date` modify a date or array of dates
   + parameters: 
     - `date` - string or array with multiple dates
@@ -152,7 +172,7 @@ Additional functions:
       "result_holder": "is_in_subject"
    }
 ]
- ``` 
+``` 
 
 # Installation
 

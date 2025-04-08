@@ -121,6 +121,30 @@ class CustomMathFunctions
         });
     }
 
+    private function set_function_array_filter_by_key_value()
+    {
+        //Array order function
+        $this->executor->addFunction('array_filter_by_key_value', function ($arr, $key, $filterValue) {
+            try {
+                if (!is_array($arr)) {
+                    $arr = json_decode($arr, true);
+                } 
+                if (!is_array($arr)) {
+                    return array("error" => 'First parameter is not array');
+                } else if (!isset($key) || !isset($filterValue)) {
+                    return array("error" => 'Key or filtered value is not set');
+                } else {
+                    $resultArray = array_filter($arr, function ($item) use ($key, $filterValue) {
+                        return isset($item[$key]) && $item[$key] === $filterValue;
+                    });
+                    return array_values($resultArray);
+                }
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
     private function set_function_normal_cdf()
     {
         // CDF - Normal distribution
@@ -516,10 +540,11 @@ class CustomMathFunctions
         $this->set_function_get_current_date();
         $this->set_function_count();
         $this->set_function_array_filter_by_value();
+        $this->set_function_array_filter_by_key_value();
         $this->set_function_modify_date();
         $this->set_function_is_user_in_group();
     }
-
+    
     /* Public Methods *********************************************************/
 
     /**
