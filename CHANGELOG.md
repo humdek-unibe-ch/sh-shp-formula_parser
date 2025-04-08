@@ -1,3 +1,17 @@
+# v1.5.8
+ - add function `toArray` used to convert a string or array to an array. It requires 1 parameter:
+   - `arg1` - the array to convert
+   - example:
+   
+   ```
+   [
+      {
+         "formula": "toArray('[{"subtaskName":"Sub1","subtaskDescription":"sadasd","subtaskDone":"false"},{"subtaskName":"Sub2","subtaskDescription":"asdad","subtaskDone":"false"}]')",
+         "result_holder": "converted_array"
+      }
+   ]
+   ```
+
 # v1.5.7
 
  - add functions `array_filter_by_key_value` . It requires 3 parameters:

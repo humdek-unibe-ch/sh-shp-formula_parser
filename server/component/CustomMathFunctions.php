@@ -75,6 +75,19 @@ class CustomMathFunctions
         });
     }
 
+    private function set_function_toArray()
+    {
+        //Array count function
+        $this->executor->addFunction('toArray', function ($arg1, ...$args) {
+            if (\is_array($arg1)) {
+                return $arg1;
+            }
+
+            return json_decode($arg1, true);
+        });
+    }
+
+
     private function set_function_order_array()
     {
         //Array order function
@@ -539,6 +552,7 @@ class CustomMathFunctions
         $this->set_function_implode();
         $this->set_function_get_current_date();
         $this->set_function_count();
+        $this->set_function_toArray();
         $this->set_function_array_filter_by_value();
         $this->set_function_array_filter_by_key_value();
         $this->set_function_modify_date();

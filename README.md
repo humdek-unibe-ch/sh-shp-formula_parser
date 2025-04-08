@@ -22,6 +22,19 @@ Additional functions:
 ]
 ```
 
+ - `toArray` - convert a string or array to an array
+   - parameters: `arg1` - the array to convert
+   - example:
+   
+```
+[
+   {
+      "formula": "toArray('[{\"subtaskName\":\"Sub1\",\"subtaskDescription\":\"sadasd\",\"subtaskDone\":\"false\"},{\"subtaskName\":\"Sub2\",\"subtaskDescription\":\"asdad\",\"subtaskDone\":\"false\"}]')",
+      "result_holder": "converted_array"
+   }
+]
+```
+
  - `order_array` -  reorder array
    - parameters: `arr` , `key` the name of the key that we will use for sorting, `sort_type` SORT_DESC or SORT_ASC
  - `normal_cdf` - calculate CDF - Normal distribution
