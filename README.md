@@ -187,6 +187,20 @@ Additional functions:
 ]
 ``` 
 
+* `count_visited_pages` - count how many pages from given keywords were visited by the current user
+  + parameters: 
+    - `keywords` - array of page keywords to check
+  + examples:
+
+```
+[
+   {
+      "formula": "count_visited_pages(['page1', 'page2', 'page3'])",
+      "result_holder": "visited_count"
+   }
+]
+``` 
+
 # Installation
 
  - Download the code into the `sever/plugins` folder

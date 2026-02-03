@@ -1,3 +1,18 @@
+# v1.5.9
+
+ - add function `count_visited_pages` used to count how many pages from the given keywords array were visited by the current user. It requires 1 parameter:
+   - `keywords` - array of page keywords to check
+   - example:
+   
+   ```
+   [
+      {
+         "formula": "count_visited_pages(['page1', 'page2', 'page3'])",
+         "result_holder": "visited_count"
+      }
+   ]
+   ```
+
 # v1.5.8
  - add function `toArray` used to convert a string or array to an array. It requires 1 parameter:
    - `arg1` - the array to convert

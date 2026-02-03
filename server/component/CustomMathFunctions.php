@@ -534,6 +534,43 @@ class CustomMathFunctions
     }
 
     /**
+     * Sets up the 'count_visited_pages' function for execution.
+     * This function counts how many pages from the given keywords array were visited by the current user.
+     * @return void
+     */
+    private function set_function_count_visited_pages()
+    {
+        $this->executor->addFunction('count_visited_pages', function ($keywords) {
+            try {
+                if (!is_array($keywords)) {
+                    return array("error" => 'First parameter must be an array of keywords');
+                }
+
+                if (empty($keywords)) {
+                    return 0;
+                }
+
+                $id_user = $_SESSION['id_user'] ?? 1;
+                
+                // Build placeholders for IN clause
+                $placeholders = str_repeat('?,', count($keywords) - 1) . '?';
+                
+                $sql = "SELECT COUNT(DISTINCT keyword) as visited_count 
+                        FROM user_activity 
+                        WHERE id_users = ?
+                        AND keyword IN ($placeholders);";
+                
+                $params = array_merge([$id_user], $keywords);
+                $result = $this->services->get_db()->query_db_first($sql, $params);
+                
+                return $result ? (int)$result['visited_count'] : 0;
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
+    /**
      * Set all custom functions that we want to add to the math executor
      */
     private function set_math_functions()
@@ -557,6 +594,7 @@ class CustomMathFunctions
         $this->set_function_array_filter_by_key_value();
         $this->set_function_modify_date();
         $this->set_function_is_user_in_group();
+        $this->set_function_count_visited_pages();
     }
     
     /* Public Methods *********************************************************/
