@@ -268,6 +268,46 @@ class CustomMathFunctions
         });
     }
 
+    /**
+     * Merge one or more arrays into a single list.
+     * List arrays are concatenated; a single associative object (e.g. SurveyJS
+     * single-file upload) is appended as one item. Empty/null args are skipped.
+     */
+    private function set_function_array_merge()
+    {
+        $this->executor->addFunction('array_merge', function ($arg1, ...$args) {
+            try {
+                $result = [];
+                foreach ([$arg1, ...$args] as $arg) {
+                    if ($arg === null || $arg === '' || $arg === []) {
+                        continue;
+                    }
+                    if (\is_string($arg)) {
+                        $decoded = $this->decode_json_input($arg);
+                        if (!$decoded['ok']) {
+                            return array("error" => $decoded['error']);
+                        }
+                        $arg = $decoded['value'];
+                    }
+                    if (!\is_array($arg)) {
+                        return array("error" => 'Parameter is not an array');
+                    }
+                    // SurveyJS allowMultiple → list; single file → associative object
+                    if ($arg === [] || \array_is_list($arg)) {
+                        foreach ($arg as $item) {
+                            $result[] = $item;
+                        }
+                        continue;
+                    }
+                    $result[] = $arg;
+                }
+                return $result;
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
     private function set_function_array_filter_by_value()
     {
         //Array order function
@@ -748,6 +788,7 @@ class CustomMathFunctions
         $this->set_function_toArray();
         $this->set_function_json_get();
         $this->set_function_json_encode();
+        $this->set_function_array_merge();
         $this->set_function_array_filter_by_value();
         $this->set_function_array_filter_by_key_value();
         $this->set_function_modify_date();
