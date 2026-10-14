@@ -77,13 +77,145 @@ class CustomMathFunctions
 
     private function set_function_toArray()
     {
-        //Array count function
+        // Convert a JSON string to an array (or pass arrays through)
         $this->executor->addFunction('toArray', function ($arg1, ...$args) {
-            if (\is_array($arg1)) {
-                return $arg1;
+            try {
+                if (\is_array($arg1)) {
+                    return $arg1;
+                }
+
+                $decoded = $this->decode_json_input($arg1);
+                if (!$decoded['ok']) {
+                    return array("error" => $decoded['error']);
+                }
+                if (!\is_array($decoded['value'])) {
+                    return array("error" => 'Decoded JSON is not an array');
+                }
+
+                return $decoded['value'];
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
+    /**
+     * Decode a JSON string or pass through an already decoded array.
+     *
+     * @param mixed $json
+     * @return array{ok:bool,value?:mixed,error?:string}
+     */
+    private function decode_json_input($json)
+    {
+        if (\is_array($json)) {
+            return array("ok" => true, "value" => $json);
+        }
+        if (!\is_string($json)) {
+            return array("ok" => false, "error" => 'JSON input must be a string or array');
+        }
+        if (\trim($json) === '') {
+            return array("ok" => false, "error" => 'Empty JSON string');
+        }
+
+        $decoded = \json_decode($json, true);
+        if (\json_last_error() !== JSON_ERROR_NONE) {
+            return array("ok" => false, "error" => 'Invalid JSON: ' . \json_last_error_msg());
+        }
+
+        return array("ok" => true, "value" => $decoded);
+    }
+
+    /**
+     * Walk a dotted path (e.g. fotos_tour or items.0.name) on decoded JSON.
+     *
+     * @param mixed $data
+     * @param string $path
+     * @return array{ok:bool,found?:bool,value?:mixed,error?:string}
+     */
+    private function get_value_by_path($data, $path)
+    {
+        if ($path === null || $path === '') {
+            return array("ok" => true, "found" => true, "value" => $data);
+        }
+        if (!\is_string($path)) {
+            return array("ok" => false, "error" => 'Path must be a string');
+        }
+
+        $segments = \explode('.', $path);
+        $current = $data;
+        foreach ($segments as $segment) {
+            if ($segment === '') {
+                return array("ok" => false, "error" => 'Invalid path: empty segment');
+            }
+            if (!\is_array($current)) {
+                return array("ok" => true, "found" => false, "value" => null);
             }
 
-            return json_decode($arg1, true);
+            // Prefer exact string key; fall back to numeric index for list access
+            if (\array_key_exists($segment, $current)) {
+                $current = $current[$segment];
+            } elseif (\ctype_digit($segment) && \array_key_exists((int) $segment, $current)) {
+                $current = $current[(int) $segment];
+            } else {
+                return array("ok" => true, "found" => false, "value" => null);
+            }
+        }
+
+        return array("ok" => true, "found" => true, "value" => $current);
+    }
+
+    private function set_function_json_get()
+    {
+        /**
+         * Extract a value from JSON by dotted path.
+         * @param string|array $json JSON string or decoded array
+         * @param string $path Dotted path, e.g. "fotos_tour" or "items.0.name"
+         * @param mixed $default Optional default when the path is missing
+         * @return mixed Extracted value, default, or error array
+         */
+        $this->executor->addFunction('json_get', function ($json, $path, $default = null) {
+            try {
+                $has_default = \func_num_args() >= 3;
+                $decoded = $this->decode_json_input($json);
+                if (!$decoded['ok']) {
+                    return array("error" => $decoded['error']);
+                }
+
+                $lookup = $this->get_value_by_path($decoded['value'], $path);
+                if (!$lookup['ok']) {
+                    return array("error" => $lookup['error']);
+                }
+                if (!$lookup['found']) {
+                    if ($has_default) {
+                        return $default;
+                    }
+                    return array("error" => 'Path not found: ' . $path);
+                }
+
+                return $lookup['value'];
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
+        });
+    }
+
+    private function set_function_json_encode()
+    {
+        /**
+         * Encode a value as a JSON string (for SurveyJS defaults / interpolation).
+         * @param mixed $value
+         * @return string|array Encoded JSON string or error array
+         */
+        $this->executor->addFunction('json_encode', function ($value) {
+            try {
+                $encoded = \json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if ($encoded === false) {
+                    return array("error" => 'JSON encode failed: ' . \json_last_error_msg());
+                }
+                return $encoded;
+            } catch (Exception $e) {
+                return array("error" => $e->getMessage());
+            }
         });
     }
 
@@ -590,6 +722,8 @@ class CustomMathFunctions
         $this->set_function_get_current_date();
         $this->set_function_count();
         $this->set_function_toArray();
+        $this->set_function_json_get();
+        $this->set_function_json_encode();
         $this->set_function_array_filter_by_value();
         $this->set_function_array_filter_by_key_value();
         $this->set_function_modify_date();

@@ -1,3 +1,44 @@
+# v1.5.10
+
+ - add function `json_get` used to extract a value from a JSON string or decoded array by dotted path. It requires 2 parameters and 1 optional:
+   - `json` - JSON string or array
+   - `path` - dotted path (e.g. `fotos_fix`, `items.0.name`); empty path returns the whole value
+   - `default` - optional value returned when the path is missing
+   - returns `{ "error": "..." }` on invalid JSON / invalid path; if `default` is omitted and the path is missing, returns `{ "error": "Path not found: ..." }`
+   - example:
+   
+   ```
+   [
+      {
+         "formula": "json_get($reflex_json, 'fotos_fix', [])",
+         "result_holder": "fotos_fix",
+         "variables": {
+            "reflex_json": "{{reflex._json}}"
+         }
+      }
+   ]
+   ```
+
+ - add function `json_encode` used to encode a value as a JSON string (useful for SurveyJS `defaultValue` / interpolation). It requires 1 parameter:
+   - `value` - any scalar or array
+   - returns a JSON string, or `{ "error": "..." }` on encode failure
+   - uses `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES`
+   - example:
+   
+   ```
+   [
+      {
+         "formula": "json_encode(json_get($reflex_json, 'swisstopo_screenshot', []))",
+         "result_holder": "swisstopo_screenshot_json",
+         "variables": {
+            "reflex_json": "{{reflex._json}}"
+         }
+      }
+   ]
+   ```
+
+ - harden `toArray`: invalid / empty JSON and non-array decode results now return `{ "error": "..." }` instead of silent `null`
+
 # v1.5.9
 
  - add function `count_visited_pages` used to count how many pages from the given keywords array were visited by the current user. It requires 1 parameter:

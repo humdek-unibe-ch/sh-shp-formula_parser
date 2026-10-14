@@ -22,8 +22,9 @@ Additional functions:
 ]
 ```
 
- - `toArray` - convert a string or array to an array
-   - parameters: `arg1` - the array to convert
+ - `toArray` - convert a JSON string or array to an array
+   - parameters: `arg1` - JSON string or array
+   - returns `{ "error": "..." }` on empty/invalid JSON or when the decoded value is not an array
    - example:
    
 ```
@@ -31,6 +32,44 @@ Additional functions:
    {
       "formula": "toArray('[{\"subtaskName\":\"Sub1\",\"subtaskDescription\":\"sadasd\",\"subtaskDone\":\"false\"},{\"subtaskName\":\"Sub2\",\"subtaskDescription\":\"asdad\",\"subtaskDone\":\"false\"}]')",
       "result_holder": "converted_array"
+   }
+]
+```
+
+ - `json_get` - extract a value from a JSON string or decoded array by dotted path
+   - parameters:
+     - `json` - JSON string or array
+     - `path` - dotted path (e.g. `fotos_tour`, `items.0.name`); empty path returns the whole value
+     - `default` - optional value returned when the path is missing
+   - returns `{ "error": "..." }` on invalid JSON / invalid path; if `default` is omitted and the path is missing, returns `{ "error": "Path not found: ..." }`
+   - example:
+
+```
+[
+   {
+      "formula": "json_get($reflex_json, 'fotos_tour', [])",
+      "result_holder": "fotos_tour",
+      "variables": {
+         "reflex_json": "{{reflex._json}}"
+      }
+   }
+]
+```
+
+ - `json_encode` - encode a value as a JSON string (useful for SurveyJS `defaultValue` / interpolation)
+   - parameters: `value` - any scalar or array
+   - returns a JSON string, or `{ "error": "..." }` on encode failure
+   - uses `JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES`
+   - example:
+
+```
+[
+   {
+      "formula": "json_encode(json_get($reflex_json, 'swisstopo_screenshot', []))",
+      "result_holder": "swisstopo_screenshot_json",
+      "variables": {
+         "reflex_json": "{{reflex._json}}"
+      }
    }
 ]
 ```
