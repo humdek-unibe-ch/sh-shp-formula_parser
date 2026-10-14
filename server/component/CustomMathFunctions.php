@@ -35,7 +35,7 @@ class CustomMathFunctions
         $this->set_math_functions();
         $this->executor->setVarValidationHandler(function (string $name, $variable) {
             // allow all scalars, array and null
-            if (is_numeric($variable) || is_array($variable) || is_string($variable) || is_bool($variable)) {
+            if ($variable === null || is_numeric($variable) || is_array($variable) || is_string($variable) || is_bool($variable)) {
                 return;
             }
             throw new Exception("Invalid variable type");
@@ -110,19 +110,43 @@ class CustomMathFunctions
         if (\is_array($json)) {
             return array("ok" => true, "value" => $json);
         }
+        if (\is_object($json)) {
+            return array("ok" => true, "value" => \json_decode(\json_encode($json), true));
+        }
         if (!\is_string($json)) {
             return array("ok" => false, "error" => 'JSON input must be a string or array');
         }
-        if (\trim($json) === '') {
+        $json = \trim($json);
+        if (\substr($json, 0, 3) === "\xEF\xBB\xBF") {
+            $json = \substr($json, 3);
+        }
+        if ($json === '') {
             return array("ok" => false, "error" => 'Empty JSON string');
         }
 
-        $decoded = \json_decode($json, true);
-        if (\json_last_error() !== JSON_ERROR_NONE) {
-            return array("ok" => false, "error" => 'Invalid JSON: ' . \json_last_error_msg());
+        // Retry stripslashes: replace_calced_values() uses addslashes and breaks raw JSON.
+        $candidates = array($json);
+        $stripped = \stripslashes($json);
+        if ($stripped !== $json) {
+            $candidates[] = $stripped;
         }
 
-        return array("ok" => true, "value" => $decoded);
+        $last_error = 'Syntax error';
+        foreach ($candidates as $candidate) {
+            $decoded = \json_decode($candidate, true);
+            if (\json_last_error() === JSON_ERROR_NONE) {
+                if (\is_string($decoded)) {
+                    $inner = \json_decode($decoded, true);
+                    if (\json_last_error() === JSON_ERROR_NONE) {
+                        return array("ok" => true, "value" => $inner);
+                    }
+                }
+                return array("ok" => true, "value" => $decoded);
+            }
+            $last_error = \json_last_error_msg();
+        }
+
+        return array("ok" => false, "error" => 'Invalid JSON: ' . $last_error);
     }
 
     /**
