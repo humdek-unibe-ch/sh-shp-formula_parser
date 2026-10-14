@@ -75,6 +75,33 @@ Additional functions:
 ]
 ```
 
+ - `array_merge` - concatenate one or more arrays into a single list
+   - parameters: 1+ arrays (or JSON strings). Empty/`null` args are skipped.
+   - list arrays are concatenated; a single associative object (SurveyJS single-file upload) is appended as one item
+   - returns `{ "error": "..." }` on invalid JSON / non-array values
+   - example:
+
+```
+[
+   {
+      "formula": "array_merge($fotos_tour, $swisstopo_screenshot)",
+      "result_holder": "fotos_all",
+      "variables": {
+         "fotos_tour": {
+            "source": "{{reflex._json}}",
+            "json_path": "fotos_tour",
+            "default": []
+         },
+         "swisstopo_screenshot": {
+            "source": "{{reflex._json}}",
+            "json_path": "swisstopo_screenshot",
+            "default": []
+         }
+      }
+   }
+]
+```
+
  - `order_array` -  reorder array
    - parameters: `arr` , `key` the name of the key that we will use for sorting, `sort_type` SORT_DESC or SORT_ASC
  - `normal_cdf` - calculate CDF - Normal distribution

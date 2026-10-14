@@ -1,3 +1,32 @@
+# v1.5.12
+
+ - add function `array_merge` used to concatenate one or more arrays into a single list. It accepts 1+ parameters:
+   - each argument may be a list array, a single associative object (e.g. SurveyJS single-file upload), a JSON string of either, or empty/`null` (skipped)
+   - list items are appended in order; a single object is appended as one item
+   - returns `{ "error": "..." }` on invalid JSON / non-array values
+   - example (merge tour photos + Swisstopo screenshot for one loop):
+
+   ```
+   [
+      {
+         "formula": "array_merge($fotos_tour, $swisstopo_screenshot)",
+         "result_holder": "fotos_all",
+         "variables": {
+            "fotos_tour": {
+               "source": "{{reflex._json}}",
+               "json_path": "fotos_tour",
+               "default": []
+            },
+            "swisstopo_screenshot": {
+               "source": "{{reflex._json}}",
+               "json_path": "swisstopo_screenshot",
+               "default": []
+            }
+         }
+      }
+   ]
+   ```
+
 # v1.5.11
 
  - optimize `json_get` for large survey `_json` payloads (such as base64 file uploads) by extracting only the requested JSON path without loading or interpolating the full payload into memory
