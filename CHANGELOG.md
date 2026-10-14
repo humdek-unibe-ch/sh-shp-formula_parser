@@ -1,3 +1,24 @@
+# v1.5.11
+
+ - optimize `json_get` for large survey `_json` payloads (such as base64 file uploads) by extracting only the requested JSON path without loading or interpolating the full payload into memory
+ - support optional structured variable syntax for `json_get` path extraction:
+   
+   ```
+   [
+      {
+         "formula": "$fotos_tour_json",
+         "result_holder": "fotos_tour_json",
+         "variables": {
+            "fotos_tour_json": {
+               "source": "{{upload._json}}",
+               "json_path": "fotos_tour",
+               "default": []
+            }
+         }
+      }
+   ]
+   ```
+
 # v1.5.10
 
  - add function `json_get` used to extract a value from a JSON string or decoded array by dotted path. It requires 2 parameters and 1 optional:

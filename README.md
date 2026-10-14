@@ -42,6 +42,7 @@ Additional functions:
      - `path` - dotted path (e.g. `fotos_tour`, `items.0.name`); empty path returns the whole value
      - `default` - optional value returned when the path is missing
    - returns `{ "error": "..." }` on invalid JSON / invalid path; if `default` is omitted and the path is missing, returns `{ "error": "Path not found: ..." }`
+   - **memory-safe**: when `$var` is bound to an exact `{{scope._json}}` placeholder, the engine extracts the path and drops the full JSON immediately (does not embed multi-MB `_json` into the formula document / debug). Prefer this over interpolating `_json` into other fields.
    - example:
 
 ```
